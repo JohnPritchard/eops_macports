@@ -27,7 +27,7 @@ git clone https://github.com/JohnPritchard/eops_macports.git
 cd eops_macports/ports
 portindex $(pwd)
 sudo /usr/bin/sed -i '' \
-    -e 's[^rsync.*[&\nfile:///Users/jpritcha/src/git/eops_macports/ports[' \
+    -e "s[^rsync.*[&\nfile://$(pwd)[" \
     /opt/local/etc/macports/sources.conf
 ```
 
