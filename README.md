@@ -23,6 +23,7 @@ In a terminal, issue the following commands
 
 ```bash
 bash
+cd $HOME
 git clone https://github.com/JohnPritchard/eops_macports.git
 cd eops_macports/ports
 portindex $(pwd)
@@ -30,6 +31,31 @@ sudo /usr/bin/sed -i '' \
     -e "s[^rsync.*[&\nfile://$(pwd)[" \
     /opt/local/etc/macports/sources.conf
 ```
+
+### Update
+
+In a terminal, issue the following commands
+
+```bash
+bash
+cd $HOME/eops_macports
+git pull
+```
+
+### Deactivate
+
+In a terminal, issue the following commands
+
+```bash
+bash
+cd $HOME
+sudo port uninstall eops-\*
+/usr/bin/sed -i '' \
+    -e "s[^file:.*eops_macports[#&[" \
+    /opt/local/etc/macports/sources.conf
+rm -fr eops_macports
+```
+
 
 ## KARMA for KMOS
 
