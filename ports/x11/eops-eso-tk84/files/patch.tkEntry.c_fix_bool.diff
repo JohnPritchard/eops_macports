@@ -1,0 +1,29 @@
+--- ../generic/tkEntry.c.orig	2025-04-15 19:15:33
++++ ../generic/tkEntry.c	2025-04-15 19:14:02
+@@ -3188,7 +3188,7 @@
+ 				 * string). */
+ {
+     register Tcl_Interp *interp = entryPtr->interp;
+-    int code, bool;
++    int code, __bool;
+ 
+     code = Tcl_EvalEx(interp, cmd, -1, TCL_EVAL_GLOBAL | TCL_EVAL_DIRECT);
+ 
+@@ -3208,7 +3208,7 @@
+      * The command callback should return an acceptable Tcl boolean.
+      */
+     if (Tcl_GetBooleanFromObj(interp, Tcl_GetObjResult(interp),
+-			      &bool) != TCL_OK) {
++			      &__bool) != TCL_OK) {
+ 	Tcl_AddErrorInfo(interp,
+ 		 "\nvalid boolean not returned by validation command");
+ 	Tcl_BackgroundError(interp);
+@@ -3217,7 +3217,7 @@
+     }
+ 
+     Tcl_SetResult(interp, NULL, 0);
+-    return (bool ? TCL_OK : TCL_BREAK);
++    return (__bool ? TCL_OK : TCL_BREAK);
+ }
+ 
+ /*

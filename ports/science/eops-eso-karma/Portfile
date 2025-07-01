@@ -1,0 +1,654 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id: Portfile 101 2017-11-28 10:40:51Z jpritcha $
+PortSystem      1.0
+PortGroup       compilers 1.0
+
+set instrument      karma
+set uname_m         [exec uname -m]
+
+name            eops-eso-karma
+version         2.8.2b28
+#version         2.7-3.1.3
+#version         2.7
+revision        1
+categories      science
+license         GPL-2+
+platforms       darwin
+maintainers     john.david.pritchard@gmail.com
+homepage        http://www.eso.org/sci/observing/phase2/SMGuidelines/KARMA.KMOS.html
+description     ESO KMOS Observation Preparation software
+long_description ESO KMOS Observation Preparation software.
+
+## Local variables
+
+distname        eso-karma
+master_sites    https://ftp.eso.org/pub/usg/karma
+dist_subdir     eso-karma
+distfiles       karma-${version}.tar.gz \
+                karma.sh
+
+# 2.7
+checksums           rmd160  8d8d3ed530bc88689137a7c15af92994b419b7b2 \
+                    sha256  334637abfafd7d07e65efdf90c3e0d20df5c610121164a59c39715cd8ea5c1e4
+#2.7_3.1.3
+checksums           rmd160  3ae1db8164adae48b37511e2af72305873cb6371 \
+                    sha256  a51e2c036879992a0d16b38eaf9736d00a74fb981aafb4d34b2f5e6c9457d326
+# 2.8.0
+checksums           rmd160  04d14ba4cff405a54b7f6de788ae81c2674351ba \
+                    sha256  0286fa58814a36d37c4588abcb2bc3690562463525a14466f0956ff14b83bb67 \
+                    size    258425523
+
+# 2.8.1
+checksums           rmd160  92b8bd3648e068ad9aad1407add03a7b50240386 \
+                    sha256  779bb21f15fd47da3e3305678e17ba859ccc345fd92f296a590f46956b4d6fba \
+                    size    163361263
+
+# 2.8.2
+checksums           rmd160  f0f508ae581041fecba221f19cf1235c69c32ec3 \
+                    sha256  74acc64361e0805ae07e82dd27559305486198436ef0aa8ce7f8b73e8a965906 \
+                    size    322711801
+
+# 2.8.2b1
+checksums           rmd160  016d58bab775571743821a258031645a1ca79140 \
+                    sha256  b8d1ec7320b93ef72fb9def46e467e59a91a1d099716d00d08fb650790bbd0dc \
+                    size    162498683
+
+# 2.8.2b2
+checksums           rmd160  6d2fab86c8345a45b67a41de23bdfd43f731919a \
+                    sha256  ff0ddfa0fbb04a7f913038abf23b7a3e11e5852541af6d410b5daaf23b1043f9 \
+                    size    162504249
+
+# 2.8.2b3
+checksums           rmd160  517400047cebf4b82f1890ab96ac35f2a9ddbcc2 \
+                    sha256  d2245f3a6012fe81861f809060bd0ba5c03856ffe59ea9eac19afce3519840b6 \
+                    size    162504564
+
+# 2.8.2b4
+checksums           rmd160  84cd25947ab163f90aaaeb0de897bb4aada15d4b \
+                    sha256  f887e3179ee0bf85b40a3816e95db8e96e7e10307a69e5dc92e3a69c4ad590ce \
+                    size    162504648
+
+# 2.8.2b5
+checksums           rmd160  45831ee2f7a66c52d2a0d76d73afb9fc9a449bd2 \
+                    sha256  890459f9e986f67603522d42bd803069c2317f20baf052f0196d4bde7aa5ff8d \
+                    size    162506497
+
+# 2.8.2b26
+checksums           karma-2.8.2b26.tar.gz \
+                    rmd160  e3792c331c01c220bc3c376a1e768ecb93fb5c84 \
+                    sha256  9b524b71a5b19365c5956ea8694c55f289386d08b46f41ca6969eb62a66d8996 \
+                    size    179502239
+
+# 2.8.2b27
+checksums           karma-2.8.2b27.tar.gz \
+                    rmd160  f0d9b71fcd9bef89bc08064549f6fb1b0bbeee49 \
+                    sha256  5acccd093ed0766e1be62dc7d75b866d4e33c863ce4cb346f92fd990e5b40bd2 \
+                    size    179502071
+
+# 2.8.2b28
+checksums           karma-2.8.2b28.tar.gz \
+                    rmd160  97f1661470a75eb853607bbbbcac80c8b1cbe00c \
+                    sha256  d2c563897633069e2b9d8ff045a5be399afe2f1c9a9c92fc2039f2e0d03c075c \
+                    size    179502355
+
+compilers.choose    cc cxx
+compilers.setup     
+use_parallel_build      no
+
+set _tcltk_v   8.4
+set _tcltk_p_v 20
+set _blt_v     24
+set _itcl_v    3.4
+set _itk_v     3.4
+set _tkimg_v   1.4.13
+set _jpegtcl_v 9.4.0
+set _tlcx_v    8.4
+set _rtd_v     3.2.3
+set _vfs_v     1.4.1
+
+set _prefix        ${prefix}/libexec/eops-eso/karma
+set _rtd_dir       ${prefix}/libexec/eops-eso/rtd
+set _tcltk_dir     ${prefix}/libexec/eops-eso/tcltk-${_tcltk_v}
+
+#set cmd "/bin/echo 'puts \$tcl_version' | ${_tcltk_dir}/bin/tclsh"
+#set _t_v [exec {*}${cmd}]
+
+#worksrcdir          karma_src-${version}
+#worksrcdir          karma_src-2.8
+#worksrcdir          karma_src-2.8.2
+worksrcdir          karma-${version}
+configure.args \
+        --prefix=${_prefix} \
+
+configure.cflags-append \
+        -fPIC \
+        -Wno-narrowing \
+        -Wno-implicit-function-declaration \
+        -std=c11
+configure.cxxflags-append \
+        -fPIC \
+        -fpermissive \
+        -Wno-narrowing \
+        -std=c++11
+
+use_autoreconf      yes
+autoreconf.args     -fiv
+
+depends_build-append \
+      port:coreutils \
+
+configure.env-append \
+    KARMA_SRC=${worksrcpath} \
+    TCLTK_ROOT=${_tcltk_dir} \
+    RTD_ROOT=${_rtd_dir} \
+    KARMA_ROOT=${_prefix} \
+    KARMA_VERSION=${version} \
+    KARMA_REVISION=${revision} \
+    INCLUDES=-I${_tcltk_dir}/include \
+    CONFIG_SHELL=/bin/bash
+
+build.env-append \
+    CPPFLAGS=${configure.cppflags} \
+    CFLAGS=${configure.cflags} \
+    CXXFLAGS=${configure.cxxflags} \
+    LDFLAGS=${configure.ldflags} \
+    KARMA_SRC=${worksrcpath} \
+    TCLTK_ROOT=${_tcltk_dir} \
+    RTD_ROOT=${_rtd_dir} \
+    KARMA_ROOT=${_prefix} \
+    KARMA_VERSION=${version} \
+    KARMA_REVISION=${revision} \
+    INCLUDES=-I${_tcltk_dir}/include \
+    CONFIG_SHELL=/bin/bash
+
+destroot.env-append \
+    KARMA_SRC=${worksrcpath} \
+    TCLTK_ROOT=${_tcltk_dir} \
+    RTD_ROOT=${_rtd_dir} \
+    KARMA_ROOT=${_prefix} \
+    KARMA_VERSION=${version} \
+    KARMA_REVISION=${revision} \
+    INCLUDES=-I${_tcltk_dir}/include \
+    CONFIG_SHELL=/bin/bash
+
+set sp_name [string range $subport [expr [string length $name]+1] [string length $subport]]
+#_#puts "${name} :: ${subport} :: ${sp_name} :: ${worksrcdir} :: ${worksrcpath}"
+##########################
+# mk
+##########################
+subport ${name}-mk     {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/third_party/${sp_name}/unix"
+  depends_lib-append \
+        port:eops-eso-rtd \
+        port:xorg-server \
+        port:xorg-libX11 \
+        port:xorg-libXext \
+        port:zlib
+
+  configure.args-append \
+      --with-tcl=${_tcltk_dir}/include
+
+  configure.cxxflags-append \
+          -I${_tcltk_dir}/include \
+          -L${_tcltk_dir}/lib -ltcl
+  configure.cxxflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.cxxflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  configure.ldflags-append \
+          -I${_tcltk_dir}/include \
+          -L${_tcltk_dir}/lib -ltcl
+  configure.ldflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.ldflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  build.env-append \
+      LDFLAGS=${configure.ldflags} \
+      CXXFLAGS=${configure.ldflags} \
+      CXX=${configure.cxx}
+
+if 0 {
+  post-extract {
+    system "ln -sv ${_worksrcpath}/third_party/${sp_name}-* ${_worksrcpath}/third_party/${sp_name}"
+    if {${build_arch} eq "arm64"} {
+      reinplace \
+        "s@typedef int t4_i32@typedef long t4_i32@" \
+        ${worksrcpath}/../src/header.h
+    }
+  }
+} else {
+  post-extract {
+    system "ln -sv ${_worksrcpath}/third_party/${sp_name}-* ${_worksrcpath}/third_party/${sp_name}"
+  }
+}
+  variant fix_shared description "install_name_tool to set id & make libMk4tcl.dylib --> Mk4tcl.dylib softlink " {
+    post-destroot {
+      system "ln -s Mk4tcl.dylib ${destroot}/${_tcltk_dir}/lib/Mk4tcl/libMk4tcl.dylib"
+      system "\
+        for _n in ${_tcltk_dir}/lib/Mk4tcl/Mk4tcl.dylib ; do \
+          install_name_tool -id ${_tcltk_dir}/lib/Mk4tcl/Mk4tcl.dylib ${destroot}${_tcltk_dir}/lib/Mk4tcl/Mk4tcl.dylib ; \
+        done"
+    }
+  }
+  default_variants +shared +fix_shared
+}
+##########################
+# vfs
+##########################
+subport ${name}-vfs    {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/third_party/${sp_name}"
+  depends_lib port:${name}-mk
+  configure.args-append \
+      --enable-64bit \
+      --with-tcl=${_tcltk_dir}/lib \
+      --with-tclinclude=${_tcltk_dir}/include \
+      --disable-threads \
+      --libdir=${_prefix}/lib/vfs
+  post-extract {
+    system "ln -sv ${_worksrcpath}/third_party/${sp_name}-* ${_worksrcpath}/third_party/${sp_name}"
+  }
+  variant fix_shared description "install_name_tool to set id" {
+    post-destroot {
+      system "\
+        for _n in ${destroot}${_prefix}/lib/vfs/vfs1.4.1/\*.dylib ; do \
+          _bnn=\$(basename \${_n}) ; \
+          install_name_tool -id ${_prefix}/lib/vfs/vfs1.4.1/\${_bnn} \${_n} ; \
+        done"
+    }
+  }
+  default_variants +shared +fix_shared
+}
+##########################
+# kmmcfg
+##########################
+subport ${name}-kmmcfg {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/${sp_name}"
+  depends_lib port:${name}-vfs
+  post-extract {
+    reinplace \
+      "s@ \$(prefix)@ \$(DESTDIR)/\$(prefix)@g" \
+      ${worksrcpath}/src/Makefile.am
+  }
+}
+##########################
+# kmclib
+##########################
+subport ${name}-kmclib {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/${sp_name}"
+  depends_lib port:${name}-kmmcfg
+}
+##########################
+# kmcpan
+##########################
+subport ${name}-kmcpan {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/${sp_name}"
+  configure.ldflags \
+          -L${_prefix}/lib -lkmclib \
+          -I${_tcltk_dir}/include \
+          -L${_tcltk_dir}/lib -ltcl \
+          ${configure.ldflags}
+  configure.ldflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.ldflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  depends_lib port:${name}-kmclib
+  post-extract {
+    reinplace \
+      "s@ \$(libdir)@ \$(DESTDIR)/\$(libdir)@g" \
+      ${worksrcpath}/src/Makefile.am
+  }
+}
+##########################
+# kms
+##########################
+subport ${name}-kms    {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/${sp_name}"
+  depends_build port:zlib
+  depends_lib port:${name}-kmcpan
+
+  patchfiles-append   patch.crc32.c_uLong.diff
+  post-patch {
+    # Use MacPorts zlib
+    delete ${worksrcpath}/include/zlib.h
+    delete ${worksrcpath}/include/zconf.h
+    #
+  }
+}
+##########################
+# kmspan
+##########################
+subport ${name}-kmspan {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/${sp_name}"
+  configure.ldflags \
+          -L${_prefix}/lib -lkmcpan -lkms -lkmclib \
+          -I${_tcltk_dir}/include \
+          -L${_tcltk_dir}/lib -ltcl \
+          ${configure.ldflags}
+  configure.ldflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.ldflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  depends_lib port:${name}-kms
+  post-extract {
+    reinplace \
+      "s@^install-exec-hook:@&\\n\\tmkdir \$(configdir)@g" \
+      ${worksrcpath}/src/Makefile.am
+    reinplace \
+      "s@ \$(libdir)@ \$(DESTDIR)/\$(libdir)@g" \
+      ${worksrcpath}/src/Makefile.am
+    reinplace \
+      "s@ \$(configdir)@ \$(DESTDIR)/\$(configdir)@g" \
+      ${worksrcpath}/src/Makefile.am
+    reinplace \
+      "s@../../config/appdefaults@config/appdefaults@g" \
+      ${worksrcpath}/src/kmspanKARMA.tcl
+  }
+  post-destroot {
+    xinstall -m 0755 ${worksrcpath}/src/FindingChart_plugin.tcl ${destroot}${_prefix}/lib
+  }
+}
+##########################
+# kmsdat
+##########################
+subport ${name}-kmsdat {
+  set _worksrcpath "${worksrcpath}"
+  set worksrcpath "${worksrcpath}/${sp_name}"
+  depends_lib port:${name}-kmspan
+  post-extract {
+    reinplace \
+      "s@ \$(datadir)@ \$(DESTDIR)/\$(datadir)@g" \
+      ${worksrcpath}/src/Makefile.am
+    reinplace \
+      "s@mkdir @mkdir -p @g" \
+      ${worksrcpath}/src/Makefile.am
+  }
+}
+##########################
+# karma
+##########################
+subport ${name}        {
+  depends_lib port:${name}-kmsdat
+  #_#puts "subport=${subport}"
+  #_#puts "${worksrcpath}"
+  depends_lib port:${name}-kmclib
+  depends_lib port:${name}-kmcpan
+  depends_lib port:${name}-kms
+  depends_lib port:${name}-kmspan
+  depends_lib port:${name}-kmsdat
+  post-patch {
+    reinplace \
+      "s@g\+\+ @\${CXX} @" \
+      ${worksrcpath}/configure.ac
+    reinplace \
+      "s@\\.\\*/\\.\\*@.*@" \
+      ${worksrcpath}/configure.ac
+    reinplace \
+      "s@^AC_CONFIG_SUBDIRS@#AC_CONFIG_SUBDIRS@" \
+      ${worksrcpath}/configure.ac      
+    reinplace \
+      "s@^SUBDIRS.*@SUBDIRS = src test@g" \
+      ${worksrcpath}/Makefile.am
+    reinplace \
+      "s@\$(prefix)/bin/tclsh8.4@\$(TCLTK_ROOT)/bin/tclsh8.4@g" \
+      ${worksrcpath}/src/Makefile.am
+    reinplace \
+      "s@ \$(libdir)@ \$(DESTDIR)/\$(libdir)/pkg@g" \
+      ${worksrcpath}/src/Makefile.am
+    reinplace \
+      "/KARMA_VERSION/s/\[0-9\]*\\.\[\\.0-9\]*/${version}/g" \
+        ${worksrcpath}/src/karma.tcl
+    reinplace "/KARMA_REVISION/s/\[0-9\]\[0-9\]*/${revision}/g" \
+        ${worksrcpath}/src/karma.tcl
+
+    # Build library rather than kitsh...
+    if {[vercmp ${version} 2.8.2] < 0} {
+      reinplace \
+        "s@^.*mv kitsh.*@@g" \
+        ${worksrcpath}/src/Makefile.am
+      reinplace \
+        "s@^\\\t\$(prefix)/bin/tclsh8.4@\\\techo &@g" \
+        ${worksrcpath}/src/Makefile.am
+      reinplace \
+        "s@bin_PROGRAMS = kitsh@lib_LTLIBRARIES = libkarma.la@g" \
+        ${worksrcpath}/src/Makefile.am
+      reinplace \
+        "s@kitsh@libkarma_la@g" \
+        ${worksrcpath}/src/Makefile.am
+      reinplace \
+        "s@_LDADD@_LIBADD@g" \
+        ${worksrcpath}/src/Makefile.am
+    }
+
+  }
+  patchfiles-append  src_Makefile.am.diff
+
+  configure.cflags \
+          -I${_prefix}/include \
+          -I${worksrcpath}/include \
+          -I${_tcltk_dir}/include \
+          -I${_tcltk_dir}/include/tcl${_tcltk_v}.${_tcltk_p_v} \
+          ${configure.cflags}
+  configure.cflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.cflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  configure.cppflags \
+          -I${_prefix}/include \
+          -I${worksrcpath}/include \
+          -I${_tcltk_dir}/include \
+          -I${_tcltk_dir}/include/tcl${_tcltk_v}.${_tcltk_p_v} \
+          ${configure.cppflags}
+  configure.cppflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.cppflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  configure.cxxflags \
+          -I${_prefix}/include \
+          -I${worksrcpath}/include \
+          -I${_tcltk_dir}/include \
+          -I${_tcltk_dir}/include/tcl${_tcltk_v}.${_tcltk_p_v} \
+          ${configure.cxxflags}
+  configure.cxxflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.cxxflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+
+  configure.ldflags \
+          -I${_prefix}/include \
+          -I${worksrcpath}/include \
+          -I${_tcltk_dir}/include \
+          -I${_tcltk_dir}/include/tcl${_tcltk_v}.${_tcltk_p_v} \
+          -L${_tcltk_dir}/lib -ltcl${_tcltk_v} -ltk${_tcltk_v} -lBLT${_blt_v} \
+          -L${_tcltk_dir}/lib/itcl${_itcl_v} -litcl${_itcl_v} \
+          -L${_tcltk_dir}/lib/itk${_itk_v} -litk${_itk_v} \
+          -L${_tcltk_dir}/lib/Img${_tkimg_v} \
+            -ltkimgwindow${_tkimg_v} \
+            -ltkimgjpeg${_tkimg_v} \
+            -ljpegtcl${_jpegtcl_v} \
+            -ltkimg${_tkimg_v} \
+          -L${_tcltk_dir}/lib/tclx${_tlcx_v} -ltclx${_tlcx_v} \
+          -L${_rtd_dir}/lib -lrtd${_rtd_v} -lcfitsio \
+          -L${_tcltk_dir}/lib/Mk4tcl -lMk4tcl \
+          -L${_prefix}/lib/vfs/vfs${_vfs_v} -lvfs${_vfs_v} \
+          -L${_prefix}/lib -lkmspan -lkms -lkmcpan -lkmclib -lkmmcfg \
+          -lz \
+          -lX11 -lXext -ldl -lutil -lm \
+          ${configure.ldflags}
+  configure.ldflags-delete \
+          -I${prefix}/include \
+          -L${prefix}/lib
+  configure.ldflags-append \
+          -I${prefix}/include \
+          -L${prefix}/lib
+
+  #pre-build {
+  #  file mkdir ${worksrcpath}/tmp-install
+  #}
+  post-build {
+    ## from karmaBuild::buildTclKit()
+    ##
+    # pack kit shell and runtime.kit together
+    #printf "append runtime.kit...  "
+
+    # create dummy kit
+    #if [ "${target}" != "DEBUG" ]
+    #then
+    #    strip $KARMA_SRC/tmp-install/kitsh # remove symbols before packing
+    #fi
+    #cp $KARMA_SRC/tmp-install/kitsh ./dummy 1>> ${log_stdout} 2>> ${log_stderr}
+    #chmod u+x ./dummy
+    #cat runtime.kit >> dummy # append runtime.kit (contains no binary code)
+    #file copy ${worksrcpath}/tmp-install/kitsh ${worksrcpath}/dummy
+    #system "cat ${worksrcpath}/runtime.kit >> ${worksrcpath}/dummy"
+
+    # copy kitsh to provide an independent runtime for wrapping
+    #cp $KARMA_SRC/tmp-install/kitsh tclkit
+    #chmod u+x ./tclkit 1>> ${log_stdout} 2>> ${log_stderr}
+    #file copy ${worksrcpath}/tmp-install/kitsh ${worksrcpath}/tclkit
+
+    # ensure optimal packing
+    # 'EOF' _must_ be quoted here, otherwise the interpreting shell (sh) tries
+    # to substitute variables and commands _before_ the Tclkit comes into play
+    #./dummy 1>> ${log_stdout} 2>> ${log_stderr} <<-'EOF'
+    #./dummy <<-'EOF'
+#set db [vfs::mk4::Mount runtime.kit runtime.kit -readonly]
+#vfs::attributes runtime.kit -state translucent
+#set fd [open tclkit a]
+#mk::file save $db $fd
+#close $fd
+#vfs::unmount runtime.kit
+#exit 0
+#EOF
+
+  }
+  #post-install {
+  #  puts "post-install echo run ./dummy"
+  #}
+  #post-activate {
+  #  puts "post-activate echo run ./dummy"
+  #}
+  pre-destroot {
+    xinstall -d ${destroot}${_prefix}/lib
+    xinstall -d ${destroot}${_prefix}/lib/pkg
+    #xinstall -m 640 ${worksrcpath}/src/karma.tcl ${destroot}${_prefix}/lib/pkg
+    #_#puts "-------------------------------------------------------------------"
+    #system "ls -l ${_prefix}/lib/*.tcl"
+    #_#puts "-------------------------------------------------------------------"
+    #system "ls -l ${destroot}${_prefix}/lib"
+    #_#puts "-------------------------------------------------------------------"
+    #system "echo ln -sv ${_prefix}/lib/*.tcl ${destroot}${_prefix}/lib"
+    system "ln -sv ${_prefix}/lib/*.{tcl,dylib} ${destroot}${_prefix}/lib/pkg"
+    #system "ln -sv ${destroot}${_prefix}/lib/*.{tcl,dylib} ${destroot}${_prefix}/lib/pkg"
+    #system "ls -l ${destroot}${_prefix}/lib"
+    #_#puts "-------------------------------------------------------------------"
+  }
+  post-destroot {
+    move ${destroot}${_prefix}/lib/pkg/pkgIndex.tcl ${destroot}${_prefix}/lib/pkgIndex.tcl
+    file delete -force ${destroot}${_prefix}/lib/pkg
+    xinstall -p -m 0755 \
+      ${filespath}/karma.sh \
+      ${destroot}${prefix}/bin/
+    set k_sh ${destroot}${prefix}/bin/karma.sh
+    set k_dir eso
+    if { $name == "eops-eso-karma" } {
+      set k_sh ${destroot}${prefix}/bin/eops-karma.sh
+      set k_dir eops-eso
+    }
+    move \
+      ${destroot}${prefix}/bin/karma.sh \
+      ${k_sh}
+    reinplace \
+      "s%#KARMA_PATH#%${prefix}/libexec/${k_dir}/karma%" \
+      ${k_sh}
+  }
+  notes "
+***************************************************
+****   Congratulations!!! karma is installed   ****
+****                                           ****
+****     Start karma with eops-karma.sh        ****
+***************************************************
+"
+}
+
+variant shared description "Make shared as well as static libraries" {
+  configure.args-delete \
+        --disable-shared
+  configure.args-append \
+        --enable-shared
+}
+
+#variant multi_pkg description "Install as multiple MacPorts packages instead of a single package" {
+#
+#}
+
+## port:coreutils required for gexpr
+#depends_run \
+#      port:xorg-server \
+#      port:coreutils
+
+#post-extract {
+#  system "find ${workpath}/${worksrcdir} -name config.cache -exec rm {} \\;"
+#}
+#build {
+#   system "(\
+#cd ${worksrcpath} && \
+#LIBS='-L${worksrcpath}/tmp-install/lib -L${prefix}/lib -lX11' \
+#INCLUDES='-I${worksrcpath}/tmp-install/include -I${prefix}/include' \
+#CFLAGS='-I${worksrcpath}/tmp-install/include -I${prefix}/include' \
+#CC=${configure.cc} \
+#CXX=${configure.cxx} \
+#startx ./karmaBuild \
+#     )"
+#}
+
+#destroot {
+#   system "/usr/bin/install -d ${destroot}${prefix}/libexec/${name}"
+#   system "/usr/bin/install -d ${destroot}${prefix}/libexec/${name}/{bin,config,data,doc}"
+#   system "/usr/bin/install -p -m 0755 \
+#     ${worksrcpath}/tmp-install/bin/* \
+#     ${destroot}${prefix}/libexec/${name}/bin"
+#   system "/usr/bin/install -p -m 0755 \
+#     ${filespath}/karma.sh \
+#     ${destroot}${prefix}/libexec/${name}/bin"
+#   system "gsed -i \
+#     -e 's%#KARMA_PATH#%${prefix}/libexec/${name}%' \
+#     ${destroot}${prefix}/libexec/${name}/bin/karma.sh"
+#   system "/usr/bin/install -p -m 0644 \
+#     ${worksrcpath}/tmp-install/config/* \
+#     ${destroot}${prefix}/libexec/${name}/config"
+#   system "/usr/bin/install -p -m 0644 \
+#     ${worksrcpath}/tmp-install/data/* \
+#     ${destroot}${prefix}/libexec/${name}/data"
+##   system "/usr/bin/install -p -m 0644 \
+##     ${worksrcpath}/tmp-install/doc/* \
+##     ${destroot}${prefix}/libexec/${name}/doc"
+#   system "ln -s ${prefix}/libexec/${name}/bin/karma.sh    ${destroot}${prefix}/bin/eops-karma"
+#}

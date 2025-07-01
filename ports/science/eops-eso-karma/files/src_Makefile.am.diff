@@ -1,0 +1,95 @@
+--- src/Makefile.am.original	2024-10-16 10:21:10
++++ src/Makefile.am	2024-12-11 18:33:45
+@@ -15,48 +15,22 @@
+ 
+ ## Automake build flags
+ AM_CPPFLAGS = \
+-	-DTCL_LOCAL_APPINIT=TclKit_AppInit \
+-	-I$(prefix)/include \
+-	-I$(KARMA_SRC)/third_party/tcl8.4.20/generic \
+-	-I$(KARMA_SRC)/include \
+-	-I$(KARMA_SRC)/kms/include \
+-	-I$(KARMA_SRC)/kmspan/include \
+-	-I$(KARMA_SRC)/kmcpan/include \
+-	-I$(KARMA_SRC)/kmclib/include \
+-	-I$(KARMA_SRC)/kmmcfg/include
++	-DTCL_LOCAL_APPINIT=TclKit_AppInit
+ AM_CXXFLAGS = -fPIC
+ 
++bin_SCRIPTS = karma.sh
++dist_bin_SCRIPTS = karma.tcl
+ ## custom (KARMA) Tclkit shell, base component of a KARMA starpack
+ bin_PROGRAMS = kitsh
+ dist_kitsh_SOURCES = karmaKit.C pwb.c rechan.c zlib.c karmaScriptInterface.C
+-nodist_kitsh_SOURCES = $(KARMA_SRC)/third_party/tcl8.4.20/unix/tclAppInit.c
+-kitsh_LDADD = \
+-	$(prefix)/lib/vfs/vfs1.4.1/libvfs1.4.1.a \
+-	$(prefix)/lib/libz.a \
+-	$(KARMA_SRC)/third_party/mk-2.4.9.7/unix/Mk4tcl.a \
+-	$(prefix)/lib/libkmspan.a \
+-	$(prefix)/lib/libkms.a \
+-	$(prefix)/lib/libkmcpan.a \
+-	$(prefix)/lib/libkmclib.a \
+-	$(prefix)/lib/libkmmcfg.a \
+-	$(prefix)/lib/librtd3.2.2.a \
+-	$(prefix)/lib/libcfitsio.a \
+-	$(prefix)/lib/libBLT24.a \
+-	$(prefix)/lib/itcl3.4/libitcl3.4.a \
+-	$(prefix)/lib/itk3.4/libitk3.4.a \
+-	$(prefix)/lib/Img1.4.13/libtkimgwindow1.4.13.a \
+-	$(prefix)/lib/Img1.4.13/libtkimgjpeg1.4.13.a \
+-	$(prefix)/lib/Img1.4.13/libjpegtclstub9.4.0.a \
+-	$(prefix)/lib/Img1.4.13/libjpegtcl9.4.0.a \
+-	$(prefix)/lib/Img1.4.13/libtkimg1.4.13.a \
+-	$(prefix)/lib/tclx8.4/libtclx8.4.a \
+-	$(prefix)/lib/libtk8.4.a \
+-	$(prefix)/lib/libtcl8.4.a \
+-	$(prefix)/lib/libstdc++.a \
+-	-lX11 -lXext -ldl -lutil -lm $(kitEXTRALIBS)
++
++nodist_kitsh_SOURCES = $(TCLTK_ROOT)/lib/tcl8.4/tclAppInit.c
++## LDFLAGS is set in Portfile
++kitsh_LDADD = $(kitEXTRALIBS)
+ kitsh_LDFLAGS = \
+ 	-L/usr/lib64 -L/usr/X11R6/lib64 -L/usr/lib -L/usr/X11R6/lib \
+ 	-L$(prefix)/lib
++
+ if OS_IS_MACOS
+     kitsh_LDFLAGS +=
+     kitsh_LDADD   +=
+@@ -65,9 +39,21 @@
+     kitsh_LDADD   += -lrt
+ endif
+ 
++## 'kitsh' is the sole library that needs to be built here
++lib_LTLIBRARIES = libkarma.la
++#libkarma_la_SOURCES = karma.C
++libkarma_la_LIBADD = \
++	karmaKit.o pwb.o rechan.o zlib.o karmaScriptInterface.o \
++	tclAppInit.o \
++	$(kitsh_LDADD)
++libkarma_la_LDFLAGS = $(kitsh_LDFLAGS)
++
+ ## additional actions to be performed after 'make all'
++# $(prefix)/bin/tclsh8.4 makeIndex.tcl $(libdir) > /dev/null
++# vscode build
++#	$(TCLTK_ROOT)/bin/tclsh8.4 makeIndex.tcl $(libdir) > /dev/null
+ all-local:
+-	$(prefix)/bin/tclsh8.4 makeIndex.tcl $(libdir) > /dev/null
++	mkdir -p $(KARMA_SRC)/tmp-install
+ 	mv kitsh $(KARMA_SRC)/tmp-install
+ 
+ ## create package index
+@@ -76,10 +62,10 @@
+ 	  $(TCLTK_ROOT)/bin/tclsh8.4 makeIndex.tcl $(libdir) > /dev/null
+ 
+ ## additional files/directories to be included into the distribution
+-EXTRA_DIST = ../include makeIndex.tcl karma.tcl
++EXTRA_DIST = ../include makeIndex.tcl karma.tcl karma.sh.in
+ 
+ ## remove unnecessary intermediate and script files
+-CLEANFILES = kitsh
++CLEANFILES = kitsh $(bin_SCRIPTS)
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+ ##-----------------------------------------------------------------------------

@@ -1,0 +1,88 @@
+# $Id: Portfile 339 2021-07-08 09:30:07Z jpritcha $
+
+PortSystem      1.0
+name            eso-itk84
+version         3.4.2
+
+PortGroup           compilers 1.0
+
+set _tcl_version    8.4.20
+set _tcl_branch_id  [join [lrange [split ${_tcl_version} .] 0 1] ""]
+set _tcl_branch     [join [lrange [split ${_tcl_version} .] 0 1] .]
+set _name           [lindex [split ${name} -] 1]
+set _name           [string replace ${_name} [expr [string length $_name]-2] [string length $_name] ""]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}${_tcl_branch_id}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+categories      lang
+maintainers     john.david.pritchard@gmail.com
+description     Incr Tk Tool Kit
+long_description \
+  Incr Tk Tool Kit
+
+platforms           darwin
+homepage            http://incrtcl.sourceforge.net/
+master_sites        sourceforge:project/incrtcl/%5BIncr%20Tcl_Tk%5D-source/Itk%20${version}
+
+dist_subdir         eso-tcltk
+distname            ${_name}${branch}
+distfiles           ${_name}${version}${extract.suffix}
+
+checksums             rmd160  4c7f70a9c77b2390d41071777dfb47c0599da36e \
+                      sha256  8e5746de402d4ac9920f35793a1d328cf084b0c3d6af8b057e00fd37c82ad2ec
+
+# Itcl_EventuallyFree((ClientData)mcode, Itcl_DeleteMemberCode);
+#   --> 
+# Itcl_EventuallyFree((ClientData)mcode, (Tcl_FreeProc*) Itcl_DeleteMemberCode);
+patchfiles-append     patch.itk_cmds.c_fix_Itcl_DeleteMemberCode.diff
+
+compilers.choose    cc cxx
+compilers.setup     gcc 
+
+#default_variants  +${compilers.gcc_default}
+use_parallel_build      no
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
+
+configure.cflags-append   "-I${prefix}/include/itcl${branch}"
+configure.cflags-append   "-I${prefix}/include/tcl${_tcl_version}"
+configure.cflags-append   "-I${prefix}/include"
+configure.cflags-append   "-I/opt/local/include"
+
+#compiler.c_standard  1999
+
+configure.args      \
+        --exec_prefix=${prefix} \
+        --mandir=${prefix}/share/man \
+        --with-itcl=${prefix}/lib/itcl${branch} \
+		    --with-tcl=${prefix}/lib \
+		    --with-tclinclude=${prefix}/include \
+        --with-tk=${prefix}/lib \
+		    --with-tkinclude=${prefix}/include \
+        --x-libraries=/opt/local/lib \
+        --x-includes=/opt/local/include \
+		    --enable-shared
+if { [gcc_variant_isset] && [compilers::get_current_gcc_version] >= 14 } {
+  configure.cflags-append  \
+          -Wno-incompatible-pointer-types \
+
+}
+depends_lib-append port:${_eso_pref}eso-tk84
+depends_lib-append port:${_eso_pref}eso-itcl84
+
+post-configure {
+  ## INCLUDES includes /opt/local/include inherited from TK_INLCUDES
+  ## but when it is this early in the compile it breaks compilation...
+  reinplace "s%^INCLUDES.*%INCLUDES = %" ${worksrcpath}/Makefile
+}
+
+post-destroot {
+  delete ${destroot}${prefix}/share/man/mann/Toplevel.n
+  system "ln -s . ${destroot}${prefix}/lib/${_name}${branch}/library"
+  system "\
+    for _n in ${_name} ; do \
+      install_name_tool -id ${prefix}/lib/\${_n}${branch}/lib\${_n}${branch}.dylib ${destroot}${prefix}/lib/\${_n}${branch}/lib\${_n}${branch}.dylib ; \
+    done"
+}

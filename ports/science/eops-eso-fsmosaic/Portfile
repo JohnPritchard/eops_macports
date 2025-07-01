@@ -1,0 +1,78 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id: Portfile 701 2024-12-05 21:12:49Z jpritcha $
+PortSystem      1.0
+name            eso-fsmosaic
+version         259760
+revision        1
+
+PortGroup           compilers 1.0
+
+set _name           [string map {eso- ""} ${name}]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso
+
+categories      science
+license         GPL-2+
+platforms       darwin
+maintainers     john.david.pritchard@gmail.com
+homepage        http://www.eso.org/sci/observing/phase2/SMGuidelines/
+description     ESO fsmosaic software
+long_description ESO fsmosaic software, part of the FIMS observation preparation software for the FORSes
+
+distname            ${_name}-${version}
+master_sites        https://ftp.eso.org/pub/usg/fsmosaic
+dist_subdir         ${_eso_pref}eso-fors-fims
+distfiles           fsmosaic-${version}${extract.suffix}
+
+checksums           rmd160  a05b02c19fff3ccd688e79324c914ab499d57381 \
+                    sha256  c1609682583a99f162e90df4976b988d1ec204ee4172bd1e5042d9b04c929f6d
+
+compilers.choose  cc cxx
+compilers.setup    -clang  -gcc44 -gcc45 -gcc46 -gcc47 -gcc48 -g95 -clang37
+
+configure.cflags-append \
+  -L${prefix}/lib
+
+worksrcdir          fsmosaic
+depends_lib         port:${_eso_pref}eso-qfits
+
+
+post-patch {
+  reinplace "s|^COMPILE_FIRST\ =.*|#&\\nCOMPILE\ FIRST\ =|" ${worksrcpath}/Makefile.in
+  reinplace "s|^COMPILE_FIRST\ =.*|#&\\nCOMPILE\ FIRST\ =|" ${worksrcpath}/Makefile.am
+  reinplace "s/^.*qfits/#&/" ${worksrcpath}/configure.ac
+  reinplace "s/^AM_C_PROTOTYPES/#&/" ${worksrcpath}/configure.ac
+  delete ${worksrcpath}/qfits
+  delete ${worksrcpath}/admin
+}
+
+pre-configure {
+  reinplace "s|main()|main(void)|" ${worksrcpath}/acinclude.m4
+}
+
+use_autoreconf      yes
+autoreconf.args     -fiv
+
+#default_variants +${compilers.gcc_default}
+
+use_parallel_build  no
+
+variant ld_classic description "Use the classic linker" {
+  configure.ldflags-append "-ld_classic"
+}
+if {[vercmp ${xcodeversion} >= 15.0] && [gcc_variant_isset]} {
+  default_variants +ld_classic
+}
+
+post-destroot {
+  xinstall -d ${destroot}${_prefix}/bin
+  system "\
+    for _n in ${destroot}${prefix}/bin/\* ; do \
+      _bnn=\$(basename \${_n}) ; \
+      ln -s ${prefix}/bin/\${_bnn} ${destroot}/${_prefix}/bin/${_eso_pref}\${_bnn} ; \
+    done"
+}

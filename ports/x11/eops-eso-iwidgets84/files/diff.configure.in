@@ -1,0 +1,24 @@
+--- configure.in.orig	2024-10-22 20:51:36
++++ configure.in	2024-10-22 20:52:59
+@@ -35,13 +35,17 @@
+ # package is being installed directly beneath the toplevel Itcl directory.
+ #--------------------------------------------------------------------
+ 
+-#AC_ARG_WITH(itcl, [  --with-itcl=DIR         use Itcl 3.0 binaries from DIR],
+-#        itcl_search=$withval, itcl_search=`cd ${srcdir}/..; pwd`)
++AC_ARG_WITH(itcl, [  --with-itcl=DIR         use Itcl 3.0 binaries from DIR],
++        itcl_search=$withval, itcl_search=`cd ${srcdir}/..; pwd`)
+ 
+ ITCL_LIB_DIR=""
+-if test -r $itcl_SRC_DIR/library/itcl.tcl; then
+-    ITCL_LIB_DIR=$itcl_SRC_DIR/library
++if test -r $itcl_search/library/itcl.tcl; then
++    ITCL_LIB_DIR=$itcl_search/library
++    ITCL_SRC_DIR=$itcl_search
+ fi
++#if test -r $itcl_SRC_DIR/library/itcl.tcl; then
++#    ITCL_LIB_DIR=$itcl_SRC_DIR/library
++#fi
+ 
+ if test -z "$ITCL_LIB_DIR"; then
+     AC_MSG_ERROR([Can't find Itcl source.  Use --with-itcl to specify the the toplevel [incr Tcl] directory on your system.  This directory should contain library/itcl.tcl.])

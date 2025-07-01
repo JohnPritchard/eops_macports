@@ -1,0 +1,12 @@
+--- rtd/generic/LookupTable.h.orig	2017-10-13 18:39:01.000000000 +0200
++++ rtd/generic/LookupTable.h	2017-10-13 15:20:44.000000000 +0200
+@@ -24,6 +24,9 @@
+ 
+ typedef unsigned char byte;
+ 
++#ifdef BYTE_SIZE
++#undef BYTE_SIZE
++#endif
+ 
+ /* 
+  * This class is used internally for reference counting and subclassing.

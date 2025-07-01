@@ -1,0 +1,80 @@
+# $Id: Portfile 339 2021-07-08 09:30:07Z jpritcha $
+
+PortSystem      1.0
+name            eso-iwidgets84
+version         4.1.0
+
+PortGroup           compilers 1.0
+
+set _tcl_version    8.4.20
+set _tcl_branch_id  [join [lrange [split ${_tcl_version} .] 0 1] ""]
+set _tcl_branch     [join [lrange [split ${_tcl_version} .] 0 1] .]
+set _name           [lindex [split ${name} -] 1]
+set _name           [string replace ${_name} [expr [string length $_name]-2] [string length $_name] ""]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}${_tcl_branch_id}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+categories      lang
+maintainers     john.david.pritchard@gmail.com
+description     iTcl Tool Kit
+long_description \
+  itck
+
+platforms            darwin
+homepage             http://incrtcl.sourceforge.net/
+master_sites         sourceforge:project/incrtcl/%5BIncr%20Widgets%5D/${version}
+
+set _itcl_name              itcl
+set _itcl_version           3.4.3
+set _itcl_branch            [join [lrange [split ${_itcl_version} .] 0 1] .]
+set _itk_name               itk
+set _itk_version            3.4.2
+set _itk_branch             [join [lrange [split ${_itk_version} .] 0 1] .]
+
+dist_subdir         eso-tcltk
+distname            ${_name}-${version}
+distfiles           ${_name}-${version}${extract.suffix}
+
+checksums           rmd160  c5f934f4c1d973bfec38a45b9f256b63e305336d \
+                    sha256  572fd8eed70786b1fbff6e7fec62eab7bd731beea074022d1b5a480ecf2df586 \
+                    size    720630
+
+checksums           rmd160  0efd665ee12a6cbc9b57521632e5eb161440b9bf \
+                    sha256  e1f96dbda32570fd772bbe7fe41be9d521477f546f69748e8cc9e57f6c4bc393 \
+                    size    690954
+
+compilers.choose    cc cxx
+compilers.setup     gcc 
+
+#default_variants  +${compilers.gcc_default}
+use_parallel_build      no
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
+
+#configure.cppflags-append \
+#  -I${workpath}/tcl${_tcl_version}/generic -I${workpath}/tcl${_tcl_version}/unix -I${prefix}/include
+
+patchfiles \
+          diff.configure.in
+use_autoreconf     yes
+autoreconf.args     -fiv
+
+
+configure.args      \
+        --exec_prefix=${prefix} \
+        --mandir=${prefix}/share/man \
+		    --with-tcl=${prefix}/lib \
+		    --with-itk=${prefix}/lib/${_itk_name}${_itk_branch} \
+		    --with-itcl=${prefix}/lib/${_itcl_name}${_itcl_branch} \
+		    --enable-shared
+if { [gcc_variant_isset] && [compilers::get_current_gcc_version] >= 14 } {
+  configure.cflags-append  \
+          -Wno-incompatible-pointer-types \
+
+}
+
+## force usage of DP Tcl
+depends_lib-append port:${_eso_pref}eso-tk84
+depends_lib-append port:${_eso_pref}eso-itk84

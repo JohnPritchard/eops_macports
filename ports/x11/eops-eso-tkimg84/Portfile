@@ -1,0 +1,172 @@
+# $Id: Portfile 324 2021-06-15 06:17:18Z jpritcha $
+
+PortSystem      1.0
+name            eso-tkimg84
+#version         1.4.6
+# 1.4.10 works with gcc14 + Xcode 16!
+#version         1.4.10
+# 1.4.13 is the most recent version that works with gcc14 + Xcode 16!
+version         1.4.13
+# > 1.4.13 fails at runtime with a weird version number...
+#version         1.4.16
+#version         1.4.17
+
+PortGroup           compilers 1.0
+
+set _tcl_version    8.4.20
+set _tcl_branch_id  [join [lrange [split ${_tcl_version} .] 0 1] ""]
+set _tcl_branch     [join [lrange [split ${_tcl_version} .] 0 1] .]
+set _name           [lindex [split ${name} -] 1]
+set _name           [string replace ${_name} [expr [string length $_name]-2] [string length $_name] ""]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}${_tcl_branch_id}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+## Special case for tkimg
+set _name           Img
+
+categories      x11
+maintainers     john.david.pritchard@gmail.com
+description     tkimg Tool Kit
+long_description \
+  tkimg
+
+platforms           darwin
+homepage            http://incrtcl.sourceforge.net/
+master_sites        sourceforge:project/tkimg/tkimg/${branch}/tkimg%20${version} \
+                    sourceforge:tcl:tcl
+
+dist_subdir         eso-tcltk
+distname            ${_name}${branch}
+# --> 1.4.8
+#distfiles           ${_name}-Source-${version}${extract.suffix}
+# 1.4.9 --> 1.4.16
+#distfiles           ${_name}-${version}-Source${extract.suffix}
+distfiles           eso-${_name}-${version}-Source${extract.suffix}
+# 1.4.17
+#distfiles           ${_name}-${version}${extract.suffix}
+
+checksums           itk3.4.2.tar.gz \
+                    rmd160  4c7f70a9c77b2390d41071777dfb47c0599da36e \
+                    sha256  8e5746de402d4ac9920f35793a1d328cf084b0c3d6af8b057e00fd37c82ad2ec \
+                    tcl8.4.20-src.tar.gz \
+                    rmd160  27abfdd9d8d518cfc3beff85ca782144710b13e2 \
+                    sha256  fcb317b65c69f1d6962057c5622a80980bc22ffadf25c1cc50b6d02ff6c2cf40 \
+                    rmd160  27abfdd9d8d518cfc3beff85ca782144710b13e2 \
+                    sha256  fcb317b65c69f1d6962057c5622a80980bc22ffadf25c1cc50b6d02ff6c2cf40 \
+
+checksums           Img-Source-1.4.6.tar.gz \
+                    rmd160  a43b6c9a5be2db68f6224902a48ef3d1fae37297 \
+                    sha256  7a17c5d5eb7dfab995240398f6ac629a72d98ea1da09c60eabdea0ff513af8d6
+
+checksums           Img-Source-1.4.7.tar.gz \
+                    rmd160  0a3cb000acb2488b540fe74a0b540e99a1390d92 \
+                    sha256  5e513e0913e1f36f6802abf60cf9b8bfd6810bcc4b5a27c340e53bb4d12ab2ee \
+                    size    7259144
+
+checksums           Img-Source-1.4.8.tar.gz \
+                    rmd160  3f076703056151f89fc9b42e06980b0f54acb0f6 \
+                    sha256  3d9cd329c4f2640970558ce268724af1fb8cb4016466727c07ed502ec9425c81 \
+                    size    7330632
+
+checksums           Img-1.4.9-Source.tar.gz \
+                    rmd160  6580f462a5729b1e3060c2b97603bf34427bdc42 \
+                    sha256  89aa029d9352de02c483857bc85b27af52f1b77907ee276047e13e894d1e3629 \
+                    size    7702460
+
+checksums           Img-1.4.10-Source.tar.gz \
+                    rmd160  a612e5f18790ed6496d9dcc68dbf6af742bc4ffb \
+                    sha256  e65ceb5d9d4c5b2189c0aa298250dd696b51e17b991aec753ca25be47fa0436a \
+                    size    7503331
+
+checksums           Img-1.4.13-Source.tar.gz \
+                    rmd160  3fc3942847eef222046652719eee4c21b11e4151 \
+                    sha256  f0868c1cad9752dcf1234f81f00c417d34a11c0f0dd499ba469df29f1c40d163 \
+                    size    8366556
+
+checksums           Img-1.4.14-Source.tar.gz \
+                    rmd160  f02804981502adaa4ffcd0cd6fc2129a88264efb \
+                    sha256  7510b1b819464f228d228a862e53d9e1d3b41c23013b73790a29f7e9165abb21 \
+                    size    9844859
+
+checksums           Img-1.4.15-Source.tar.gz \
+                    rmd160  47cdda888476a5a0ed6c408cf8a6e6f7bdbbb3ec \
+                    sha256  2bd8615ee87197aca48dc7bfeef0749aac5c8c56ac499def94cc5a4700a59d73 \
+                    size    12108837
+
+checksums           Img-1.4.16-Source.tar.gz \
+                    rmd160  6b4fb4bd3558990ffc8aa4bb30246973027b5a7c \
+                    sha256  d99af4835fe3e20960817c7a1b5235dcfaa97c642593cce50bdb64c5827cd321 \
+                    size    12129708
+
+checksums           Img-1.4.17.tar.gz \
+                    rmd160  5088a7d1aaf466f43a3507db70d70376317ba335 \
+                    sha256  4607abc6d8aa92f6e4f9b337db1df90e76a2dafdf2d53eff296b68ae63bf81aa \
+                    size    11974054
+
+checksums           eso-Img-1.4.13-Source.tar.gz \
+                    rmd160  6f7b693b9c8d614c9ffad149d7cec7772fe5f4af \
+                    sha256  ed615a12ebc027aabe1774a214ea2188b5cb4ce52d2bf5a02d5874c75aec14e9 \
+                    size    11537116
+
+compilers.choose    cc cxx
+compilers.setup     gcc 
+
+
+#default_variants  +${compilers.gcc_default}
+use_parallel_build      no
+
+# <= 1.4.7
+#worksrcdir          tkimg
+# 1.4.8 -- 1.4.10
+#worksrcdir          ${_name}-Source-${version}
+# 1.4.11 -- 1.4.12, 1.4.14 -- 1.4.15
+#worksrcdir          ${_name}-${version}-Source
+# 1.4.13, >= 1.4.16
+worksrcdir          ${_name}-${version}
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
+
+destroot.destdir    INSTALL_ROOT=${destroot}
+
+if { ${os.platform} eq "darwin" && ${os.major} >= 20 } {
+  platform arm {
+    configure.cppflags-append  -DPNG_ARM_NEON_OPT=0
+  }
+}
+
+configure.ldflags-append    -headerpad_max_install_names
+configure.cflags-append    -headerpad_max_install_names
+configure.args  \
+    --exec_prefix=${prefix} \
+    --mandir=${prefix}/share/man \
+    --with-tcl=${prefix}/lib \
+    --with-tclinclude=${prefix}/include \
+    --with-tk=${prefix}/lib \
+    --with-tkinclude=${prefix}/include \
+    --x-includes=/opt/local/include \
+    --x-libraries=/opt/local/lib \
+    --enable-shared \
+    --enable-64bit
+
+depends_lib         port:${_eso_pref}eso-tk84
+depends_build       port:${_eso_pref}eso-tcllib84
+
+#configure.cppflags-append \
+#  -I${workpath}/tcl${_tclbranch}/generic -I${workpath}/tcl${_tclbranch}/unix -I${prefix}/include
+
+destroot.env-append \
+  PATH=[exec printenv PATH]:${prefix}/bin \
+  TCLLIBPATH=${prefix}/lib
+
+post-destroot {
+  delete ${destroot}${prefix}/share/man/mann/Toplevel.n
+  system "\
+    for _n in ${destroot}${prefix}/lib/${_name}${version}/lib\*.dylib ; do \
+      _bnn=\$(basename \${_n}) ; \
+      install_name_tool -id ${prefix}/lib/${_name}${version}/\${_bnn} \${_n} ; \
+    done"
+  ln -s Img${version} ${destroot}${prefix}/lib/tkimg
+#  system "ls -al ${destroot}${prefix}/share/man/mann"
+}

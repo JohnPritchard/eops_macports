@@ -1,0 +1,175 @@
+# $Id: Portfile 738 2025-05-09 16:42:31Z jpritcha $
+
+PortSystem      1.0
+name            eso-skycat
+version         3.1.8
+revision        1
+
+PortGroup       compilers 1.0
+
+set _tcl_version    8.4.20
+set _tcl_branch_id  [join [lrange [split ${_tcl_version} .] 0 1] ""]
+set _tcl_branch     [join [lrange [split ${_tcl_version} .] 0 1] .]
+set _name           [string map {eso- ""} ${name}]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso/${_name}
+set _tcltk_dir      ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
+
+## Local variables
+set SKYCAT_CFG      https://archive.eso.org/skycat/skycat.cfg
+set _rtd_dir        ${_prefix}/libexec/${_eso_pref}eso/rtd
+
+categories      science
+maintainers     john.david.pritchard@gmail.com
+description     VJPD\'s devel version of eso-skycat
+long_description \
+  skycat
+
+platforms           darwin
+homepage            https://archive.eso.org/cms/tools-documentation/skycat.html
+
+distname            ${_name}-${version}
+master_sites        https://ftp.eso.org/pub/usg/skycat:SC
+dist_subdir         eso-skycat
+distfiles           ${_name}-${version}${extract.suffix}:SC
+
+checksums           skycat-3.1.8.tar.gz \
+                    rmd160  f87f1707038f8d746a6685c2291232c69b3fdc17 \
+                    sha256  3115ddfd91725405287be1df23c778c82b7f13d9d92dac19f2df973ea34c8c5d \
+                    size    199808
+
+#compilers.choose    fc
+#compilers.setup     require_fortran
+
+use_parallel_build      no
+
+
+post-extract {
+  reinplace \
+    "s%^SHLIB_LD\[\[:space:\]\]\[\[:space:\]\]*=.*%& -install_name \${libdir}/\${PKG_LIB_FILE}%" \
+    ${worksrcpath}/skycat/Makefile.in
+  reinplace \
+    "s%cf=.*/%cf=${_rtd_dir}/lib/%" \
+    ${worksrcpath}/skycat/aclocal.m4
+  reinplace \
+    "s%\$srcdir/\.\./%${_rtd_dir}/include/%g" \
+    ${worksrcpath}/skycat/aclocal.m4
+  reinplace \
+    "s%\\(${_rtd_dir}/include/.*\\)/generic%\\1%g" \
+    ${worksrcpath}/skycat/aclocal.m4
+  reinplace \
+    "s%cat_BUILD_LIB_SPEC%cat_LIB_SPEC%g" \
+    ${worksrcpath}/skycat/configure.in
+  reinplace \
+    "s%rtd_BUILD_LIB_SPEC%rtd_LIB_SPEC%g" \
+    ${worksrcpath}/skycat/configure.in
+  reinplace \
+    "s%astrotcl_BUILD_LIB_SPEC%astrotcl_LIB_SPEC%g" \
+    ${worksrcpath}/skycat/configure.in
+  reinplace \
+    "s%tclutil_BUILD_LIB_SPEC%tclutil_LIB_SPEC%g" \
+    ${worksrcpath}/skycat/configure.in
+}
+use_autoreconf    yes
+autoreconf.args   -fiv
+
+configure.cflags-append -Wno-narrowing -std=c11
+
+configure.cxxflags-append -fpermissive -Wno-narrowing -std=c++11
+configure.cxxflags-append -I${_prefix}/include
+# -stdlib=${configure.cxx_stdlib}
+
+#configure.ldflags-append -stdlib=${configure.cxx_stdlib}
+
+build.env-append    CFLAGS=${configure.cflags} CXXFLAGS=${configure.cxxflags} LDFLAGS=${configure.ldflags}
+
+configure.args \
+        --prefix=${prefix} \
+        --exec_prefix=${prefix} \
+        --mandir=${prefix}/share/man \
+        --with-tcl=${_tcltk_dir}/lib \
+        --with-tclinclude=${_tcltk_dir}/include \
+        --with-tk=${_tcltk_dir}/lib \
+        --with-tkinclude=${_tcltk_dir}/include \
+        --with-blt=${_tcltk_dir}/lib \
+        --x-includes=/opt/local/include \
+        --x-libraries=/opt/local/lib \
+        --enable-shared
+
+depends_lib \
+        port:${_eso_pref}eso-rtd \
+
+post-patch {
+  if {[variant_isset gccdevel] && 0} {
+    reinplace \
+      "s%\\(\$\(CXXFLAGS\)\\)%\\1 -stdlib=${configure.cxx_stdlib} -std=c++11%" \
+      ${worksrcpath}/skycat/Makefile.in
+  }
+}
+
+post-destroot {
+  reinplace \
+    "s@test -d \$HOME/.skycat || mkdir \$HOME/.skycat@&\\ntest -e \$HOME/.skycat/skycat.cfg || curl -o \$HOME/.skycat/skycat.cfg ${SKYCAT_CFG}@" \
+    ${destroot}${prefix}/bin/skycat
+  xinstall -d ${destroot}/${_prefix}/bin
+  ln -s ${prefix}/bin/skycat ${destroot}/${_prefix}/bin/${_eso_pref}skycat
+  reinplace \
+    "s%PATH=\$SKYCAT_BASE/bin:\$PATH%PATH=\$SKYCAT_BASE/bin:${_tcltk_dir}/bin:\$PATH%" \
+    ${destroot}${prefix}/bin/skycat
+  reinplace \
+    "s%PATH=\"\$SKYCAT_BASE/lib:%PATH=\"\$SKYCAT_BASE/lib:${_rtd_dir}/lib:%" \
+    ${destroot}${prefix}/bin/skycat
+  reinplace \
+    "s%TCLLIBPATH=\"\$SKYCAT_BASE/lib%TCLLIBPATH=\"\$SKYCAT_BASE/lib ${_rtd_dir}/lib%" \
+    ${destroot}${prefix}/bin/skycat
+  reinplace \
+    "s%export PATH%&\\n\\n# The Finding Chart Plugin\\n\[\[ \! \"\${SKYCAT_PLUGIN}\" =~ \"FindingChart_plugin.tcl\" \]\] \\&\\& export SKYCAT_PLUGIN=\${SKYCAT_PLUGIN:+\${SKYCAT_PLUGIN}:}\$SKYCAT_BASE/lib/libfcPlugins.tcl/FindingChart_plugin.tcl%" \
+    ${destroot}${prefix}/bin/skycat
+}
+
+variant FCPlugin description {Add in ESO FindingChart creation plugin} {
+  master_sites-append https://ftp.eso.org/pub/usg/skycat:FC
+  distfiles-append    skycatFCPlugin.tar.gz:FC
+  checksums-append    skycatFCPlugin.tar.gz \
+                      rmd160  918bfd1c7701aa7bb77fa5ff196681b043e41ae9 \
+                      sha256  7e7541cbc0054f7f2dbefa6acf41e6993316edba9dc0b523844a0245666b72c1 \
+                      size    18835
+  post-destroot {
+    system "/usr/bin/install -d ${destroot}${prefix}/lib/libfcPlugins.tcl"
+    system "/usr/bin/install -p -m 0644 ${workpath}/skycatFCPlugin/* ${destroot}${prefix}/lib/libfcPlugins.tcl/"
+    reinplace \
+      "s%PATH=\$SKYCAT_BASE/bin:\$PATH%PATH=\$SKYCAT_BASE/bin:${_tcltk_dir}/bin:\$PATH%" \
+      ${destroot}${prefix}/bin/skycat
+    reinplace \
+      "s%PATH=\"\$SKYCAT_BASE/lib:%PATH=\"\$SKYCAT_BASE/lib:${_rtd_dir}/lib:%" \
+      ${destroot}${prefix}/bin/skycat
+    reinplace \
+      "s%TCLLIBPATH=\"\$SKYCAT_BASE/lib%TCLLIBPATH=\"\$SKYCAT_BASE/lib ${_rtd_dir}/lib%" \
+      ${destroot}${prefix}/bin/skycat
+    reinplace \
+      "s%export PATH%&\\n\\n# The Finding Chart Plugin\\n\[\[ \! \"\${SKYCAT_PLUGIN}\" =~ \"FindingChart_plugin.tcl\" \]\] \\&\\& export SKYCAT_PLUGIN=\${SKYCAT_PLUGIN:+\${SKYCAT_PLUGIN}:}\$SKYCAT_BASE/lib/libfcPlugins.tcl/FindingChart_plugin.tcl%" \
+      ${destroot}${prefix}/bin/skycat
+  }
+}
+default_variants-append +FCPlugin
+
+variant debug description "Configure for debugging of the build phase" {
+  #post-build {
+  #  xinstall -d /opt/local/var/macports/build/_opt_local_var_macports_sources_ftp.eso.org_pub_dfs_pipelines_repositories_stable_macports_ports_science_cpl/cpl/work/cpl-7.1.4/include
+  #  xinstall {*}[glob /opt/local/var/macports/build/_opt_local_var_macports_sources_ftp.eso.org_pub_dfs_pipelines_repositories_stable_macports_ports_science_cext/cext/work/cext-1.2.4/cext/*.h] /opt/local/var/macports/build/_opt_local_var_macports_sources_ftp.eso.org_pub_dfs_pipelines_repositories_stable_macports_ports_science_cpl/cpl/work/cpl-7.1.4/include
+  #}
+  configure.cflags-delete -Os
+  configure.cxxflags-delete -Os
+  #configure.args-append "--with-cext-includes=/opt/local/var/macports/build/_opt_local_var_macports_sources_ftp.eso.org_pub_dfs_pipelines_repositories_stable_macports_ports_science_cext/cext/work/cext-1.2.4/cext --with-cext-libs=/opt/local/var/macports/build/_opt_local_var_macports_sources_ftp.eso.org_pub_dfs_pipelines_repositories_stable_macports_ports_science_cext/cext/work/cext-1.2.4/cext/.libs"
+  configure.optflags  -O0 -g
+  configure.cflags-append ${configure.optflags}
+  configure.cxxflags-append ${configure.optflags}
+  #build.env-append    CFLAGS=${configure.cflags} CXXFLAGS=${configure.cxxflags} LDFLAGS=${configure.ldflags}
+}
+# test version 
+# See https://trac.macports.org/ticket/61050
+#puts [vercmp ${version} 3.1.7]

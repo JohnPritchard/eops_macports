@@ -1,0 +1,83 @@
+# $Id: Portfile 329 2021-06-17 14:50:23Z jpritcha $
+
+PortSystem      1.0
+name            eso-tcl84
+version         8.4.20
+
+PortGroup           compilers 1.0
+
+set _tcl_version    8.4.20
+set _tcl_branch_id  [join [lrange [split ${_tcl_version} .] 0 1] ""]
+set _tcl_branch     [join [lrange [split ${_tcl_version} .] 0 1] .]
+set _name           [lindex [split ${name} -] 1]
+set _name           [string replace ${_name} [expr [string length $_name]-2] [string length $_name] ""]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}${_tcl_branch_id}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+# Tk (x11/tk) port depends on this version
+categories    lang
+maintainers   mww openmaintainer
+description   Tool Command Language
+platforms     darwin freebsd
+master_sites  sourceforge
+
+homepage      http://www.tcl.tk/
+master_sites  sourceforge:project/tcl/Tcl/${version}
+
+checksums           md5     b57ecc6540026fd4a83288ac6bf2b02b \
+                    sha1    a9b7836aa5a1de31fde2738e2c15033d731f2aba \
+                    rmd160  27abfdd9d8d518cfc3beff85ca782144710b13e2 \
+                    sha256  fcb317b65c69f1d6962057c5622a80980bc22ffadf25c1cc50b6d02ff6c2cf40
+
+# Add '#include <stdlib.h>' to avoid problems with
+# "include the header <stdlib.h> or explicitly provide a declaration for 'exit'"
+patchfiles-append     patch.configure.in.diff
+
+compilers.choose  cc cpp cxx
+compilers.setup    gcc
+
+compiler.c_standard  1999
+
+#default_variants  +${compilers.gcc_default}
+use_parallel_build      no
+
+use_autoreconf      yes
+autoreconf.args     -fiv
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
+
+dist_subdir     eso-tcltk
+distname        ${_name}${version}-src
+worksrcdir      ${_name}${version}/unix
+
+configure.args  --mandir=${prefix}/share/man --enable-shared
+if { [gcc_variant_isset] && [compilers::get_current_gcc_version] >= 14 } {
+  configure.cflags-append  \
+          -Wno-error=implicit-int \
+          -Wno-incompatible-library-redeclaration \
+          -Wno-builtin-declaration-mismatch \
+          -Wno-implicit-function-declaration \
+
+}
+
+destroot.destdir  INSTALL_ROOT=${destroot}
+post-destroot {
+  ln -s ${prefix}/bin/tclsh8.4 ${destroot}/${prefix}/bin/tclsh
+  ln -s ${prefix}/lib/libtcl8.4.dylib ${destroot}/${prefix}/lib/libtcl.dylib
+  xinstall -d ${destroot}/${prefix}/include/${_name}${version}
+  xinstall  {*}[glob ${worksrcpath}/../generic/*.h] ${destroot}/${prefix}/include/${_name}${version}/
+  xinstall  {*}[glob ${worksrcpath}/../unix/*.h] ${destroot}/${prefix}/include/${_name}${version}/
+}
+
+# Files with failing tests: socket.test
+test.run      yes
+
+platform darwin 8 {
+	configure.env	MACOSX_DEPLOYMENT_TARGET=10.4
+}
+
+platform darwin 9 {
+	configure.env	MACOSX_DEPLOYMENT_TARGET=10.5
+}

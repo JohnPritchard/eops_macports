@@ -1,0 +1,11 @@
+--- fposs/src/Makefile_Darwin.orig	2025-05-28 13:23:18
++++ fposs/src/Makefile_Darwin	2025-05-28 13:24:25
+@@ -219,7 +219,7 @@
+ pafchkChecksum.o : $(PAFCHK_MODULE)/src/pafchkChecksum.c $(PAFCHK_MODULE)/include/pafchk.h 
+ 	$(CC) -DFLAMES_ONLY -DDRAMA_BUILD $(CWARNINGS) $(COPT) -I$(PAFCHK_MODULE)/include -c $(PAFCHK_MODULE)/src/pafchkChecksum.c
+ 
+-crc32.o :  $(PAFCHK_MODULE)/src/crc32.c $(PAFCHK_MODULE)/include/zconf.h $(PAFCHK_MODULE)/include/zlib.h
++crc32.o :  $(PAFCHK_MODULE)/src/crc32.c
+ 	$(CC)  -DFLAMES_ONLY -DDRAMA_BUILD $(CWARNINGS) $(COPT) -I$(PAFCHK_MODULE)/include -c $(PAFCHK_MODULE)/src/crc32.c
+ 
+ #*******************************************************************************

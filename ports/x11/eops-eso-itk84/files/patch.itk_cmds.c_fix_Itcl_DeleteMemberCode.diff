@@ -1,0 +1,11 @@
+--- generic/itk_cmds.c.orig	2025-05-09 17:01:48
++++ generic/itk_cmds.c	2025-05-09 17:00:29
+@@ -401,7 +401,7 @@
+     }
+ 
+     Itcl_PreserveData((ClientData)mcode);
+-    Itcl_EventuallyFree((ClientData)mcode, Itcl_DeleteMemberCode);
++    Itcl_EventuallyFree((ClientData)mcode, (Tcl_FreeProc*) Itcl_DeleteMemberCode);
+ 
+     if (opt->member->code) {
+         Itcl_ReleaseData((ClientData)opt->member->code);

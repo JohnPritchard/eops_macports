@@ -1,0 +1,66 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id: Portfile 701 2024-12-05 21:12:49Z jpritcha $
+PortSystem      1.0
+name            eso-qfits
+version         6.2.0
+revision        6
+
+PortGroup           compilers 1.0
+
+set _name           [string map {eso- ""} ${name}]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso
+
+#conflicts       eso-qfits usd-qfits
+categories      science
+license         GPL-2+
+platforms       darwin
+maintainers     john.david.pritchard@gmail.com
+homepage        https://www.eso.org/sci/software/eclipse/qfits
+description     ESO Eclipse qfits library and command suite (dfits, fitsort etc...)
+long_description ESO Eclipse qfits library and command suite (dfits, fitsort etc...)
+                 
+master_sites    https://ftp.eso.org/pub/qfits/
+distname        ${_name}-${version}
+checksums           rmd160  cf5ba86bba52ade2532132c4282ec3708f268037 \
+                    sha256  3271469f8c50310ed88d1fd62a07c8bbd5b361e102def1dce3478d1a6b104b54
+
+compilers.choose  cc cxx
+compilers.setup    -clang  -gcc44 -gcc45 -gcc46 -gcc47 -gcc48 -g95 
+
+post-extract {
+  move ${worksrcpath}/admin/html.am ${worksrcpath}/
+  delete ${worksrcpath}/admin
+  file mkdir ${worksrcpath}/admin
+  move ${worksrcpath}/html.am ${worksrcpath}/admin
+}
+
+patchfiles-append \
+          patch-qfits_memory.c_gcc7.diff \
+          patch-qfits_table.h_gcc14.diff
+
+## 2024-07-25:
+## patch-qfits_memory.c_gcc7.diff doesn't seem to be necessary anymore, at least not with gcc14...
+## This was introduced 7 years ago when the compiler was gcc7
+## But leave it in since it also does no harm, as far as I can see...
+
+configure.args-append  --mandir=${prefix}/share/man
+
+use_autoreconf      yes
+autoreconf.args     -fiv
+
+#default_variants +${compilers.gcc_default}
+use_parallel_build  no
+
+post-destroot {
+  xinstall -d ${destroot}${_prefix}/bin
+  system "\
+    for _n in ${destroot}${prefix}/bin/\* ; do \
+      _bnn=\$(basename \${_n}) ; \
+      ln -s ${prefix}/bin/\${_bnn} ${destroot}/${_prefix}/bin/${_eso_pref}\${_bnn} ; \
+    done"
+}

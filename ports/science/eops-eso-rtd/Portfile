@@ -1,0 +1,142 @@
+# $Id: Portfile 404 2022-03-08 16:56:58Z jpritcha $
+
+PortSystem      1.0
+name            eso-rtd
+version         3.2.3
+revision        1
+
+PortGroup       compilers 1.0
+
+set _tcl_version    8.4.20
+set _tcl_branch_id  [join [lrange [split ${_tcl_version} .] 0 1] ""]
+set _tcl_branch     [join [lrange [split ${_tcl_version} .] 0 1] .]
+set _name           [string map {eso- ""} ${name}]
+set _eso_pref       eops-
+name                ${_eso_pref}eso-${_name}
+set branch          [join [lrange [split ${version} .] 0 1] .]
+
+set _prefix         ${prefix}
+prefix              ${_prefix}/libexec/${_eso_pref}eso/${_name}
+set _tcltk_dir      ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
+
+categories      science
+maintainers     john.david.pritchard@gmail.com
+description     VJPD\'s devel version of eso-rtd
+long_description \
+  ESO's Real Time Display \[RTD\] tool
+
+platforms           darwin
+homepage            http://archive.eso.org/cms/tools-documentation/skycat.html
+
+
+distname            ${_name}-${version}
+master_sites        https://ftp.eso.org/pub/usg/rtd
+dist_subdir         eso-rtd
+distfiles           ${_name}-${version}${extract.suffix}
+
+checksums           rmd160  5bf26f68e18176d35dfb85c359ce48a39a209a0c \
+                    sha256  b54b46232c018c772b83da3a45d17d3400d61ab44e1f1a64576ee2c34e1b1ebc \
+                    size    6525859
+
+checksums           rtd-3.2.2b3.tar.gz \
+                    rmd160  bc2dbff5b0be175bad7e6f52a6f97490997ddd8a \
+                    sha256  6c2ba7a4ffd15a4d6d6cd02d9a647d80718a70b8319fbc23f00618fd0982a176 \
+                    size    6525423
+
+checksums           rtd-3.2.2.tar.gz \
+                    rmd160  b82dfb99f623cf5f5e4a8453ad166c3cee1f6180 \
+                    sha256  9b2e9a2c1751ba7197e037b766d1c5620ff8db004334c3465fc20d182e8f4184 \
+                    size    6525279
+
+checksums           rtd-3.2.3.tar.gz \
+                    rmd160  cdedd62b2c5ab6e32f3801bc0a878ae0c320486d \
+                    sha256  424a67719fc47d0ddb7f2294b2a8abfa96415d88d1c3fd0c39ed564575af1e61 \
+                    size    6525324
+
+
+#if {[vercmp ${version} 3.1.6] < 0} {
+#  compilers.choose    cc cxx
+#  compilers.setup
+#} else {
+#  compilers.choose    fc
+#  compilers.setup     require_fortran
+#}
+
+#default_variants  +${compilers.gcc_default}
+use_parallel_build      no
+
+post-extract {
+  # Use cfitsio from MacPorts...  
+  delete ${worksrcpath}/astrotcl/cfitsio
+  reinplace \
+    "s@,cfitsio@@" \
+    ${worksrcpath}/astrotcl/configure.in \
+    ${worksrcpath}/cat/aclocal.m4 \
+    ${worksrcpath}/rtd/aclocal.m4
+  reinplace \
+    "s@cfitsio@@" \
+    ${worksrcpath}/astrotcl/Makefile.in
+  
+  reinplace \
+    "s%^SHLIB_LD\[\[:space:\]\]\[\[:space:\]\]*=.*%& -L${_prefix}/lib -lcfitsio -install_name \${libdir}/\${PKG_LIB_FILE}%" \
+    ${worksrcpath}/cat/Makefile.in \
+    ${worksrcpath}/astrotcl/Makefile.in \
+    ${worksrcpath}/rtd/Makefile.in \
+    ${worksrcpath}/tclutil/Makefile.in
+
+#  reinplace \
+#    "s%^SHLIB_LD\[\[:space:\]\]\[\[:space:\]\]*=.*%& -L${_prefix}/lib -lcfitsio -install_name \${libdir}/\${PKG_LIB_FILE}%" \
+#    ${worksrcpath}/astrotcl/Makefile.in
+}
+
+use_autoreconf    yes
+autoreconf.args     -fiv
+
+configure.cflags-append -Wno-narrowing -std=c11
+
+configure.cxxflags-append -fpermissive -Wno-narrowing -std=c++11
+configure.cxxflags-append -I${_prefix}/include
+
+configure.args \
+        --prefix=${prefix} \
+        --exec_prefix=${prefix} \
+        --mandir=${prefix}/share/man \
+		    --with-tcl=${_tcltk_dir}/lib \
+		    --with-tclinclude=${_tcltk_dir}/include \
+		    --with-tk=${_tcltk_dir}/lib \
+		    --with-tkinclude=${_tcltk_dir}/include \
+		    --with-blt=${_tcltk_dir}/lib \
+		    --x-includes=${_prefix}/include \
+		    --x-libraries=${_prefix}/lib \
+		    --enable-shared
+
+# force usage of DP Tcl
+depends_lib \
+        port:${_eso_pref}eso-blt84 \
+        port:${_eso_pref}eso-iwidgets84 \
+        port:${_eso_pref}eso-tclx84 \
+        port:${_eso_pref}eso-tkimg84 \
+        port:cfitsio \
+
+post-destroot {
+  xinstall -d ${destroot}/${_prefix}/bin
+  ln -s ${prefix}/bin/rtd    ${destroot}/${_prefix}/bin/${_eso_pref}rtd
+  xinstall -m 644 \
+    ${worksrcpath}/rtd/generic/RtdCmds.icc \
+    ${worksrcpath}/rtd/generic/RtdHDU.icc \
+    ${worksrcpath}/rtd/generic/RtdCoords.icc \
+    ${destroot}/${prefix}/include/rtd
+  xinstall -m 755 -d \
+    ${destroot}/${prefix}/include/rtd/rtdevt
+  xinstall -m 644 \
+     {*}[glob ${worksrcpath}/rtd/rtdevt/*.h] \
+    ${destroot}/${prefix}/include/rtd/rtdevt
+  reinplace \
+    "s%PATH=\$RTD_BASE/bin:\$PATH%PATH=\$RTD_BASE/bin:${_tcltk_dir}/bin:\$PATH%" \
+    ${destroot}${prefix}/bin/rtd
+  system "\
+    for _n in \$(find ${destroot}${prefix}/lib -type f -and -name libcfitsio\\*.dylib) ; do \
+      _bnn=\$(basename \${_n}) ; \
+      install_name_tool -id ${prefix}/lib/\${_bnn} \${_n} ; \
+    done"
+}

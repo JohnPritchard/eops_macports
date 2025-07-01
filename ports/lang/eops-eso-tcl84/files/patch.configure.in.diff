@@ -1,0 +1,26 @@
+--- configure.in.o	2013-06-03 19:29:06
++++ configure.in	2025-04-14 12:44:43
+@@ -240,6 +240,7 @@
+     AC_CACHE_CHECK([proper strstr implementation], tcl_cv_strstr_unbroken, [
+ 	AC_TRY_RUN([
+ 	extern int strstr();
++    #include <stdlib.h>
+ 	int main()
+ 	{
+ 	    exit(strstr("\0test", "test") ? 1 : 0);
+@@ -261,6 +262,7 @@
+     AC_CACHE_CHECK([proper strtoul implementation], tcl_cv_strtoul_unbroken, [
+ 	AC_TRY_RUN([
+ 	extern int strtoul();
++    #include <stdlib.h>
+ 	int main()
+ 	{
+ 	    char *string = "0";
+@@ -291,6 +293,7 @@
+     AC_CACHE_CHECK([proper strtod implementation], tcl_cv_strtod_unbroken, [
+ 	AC_TRY_RUN([
+ 	extern double strtod();
++    #include <stdlib.h>
+ 	int main()
+ 	{
+ 	    char *string = " +69";

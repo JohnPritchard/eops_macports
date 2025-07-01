@@ -1,0 +1,562 @@
+--- src/bltTreeCmd.c.orig	2025-05-09 17:18:09
++++ src/bltTreeCmd.c	2025-05-09 17:19:03
+@@ -2742,11 +2742,11 @@
+     Tcl_Obj *CONST *objv)
+ {
+     Blt_TreeNode node;
+-    int bool;
++    int _bool;
+     
+-    bool = TRUE;
++    _bool = TRUE;
+     if (GetNode(cmdPtr, objv[2], &node) != TCL_OK) {
+-	bool = FALSE;
++	_bool = FALSE;
+     } else if (objc == 4) { 
+ 	Tcl_Obj *valueObjPtr;
+ 	char *string;
+@@ -2754,10 +2754,10 @@
+ 	string = Tcl_GetString(objv[3]);
+ 	if (Blt_TreeGetValue((Tcl_Interp *)NULL, cmdPtr->tree, node, 
+ 			     string, &valueObjPtr) != TCL_OK) {
+-	    bool = FALSE;
++	    _bool = FALSE;
+ 	}
+     } 
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+@@ -3137,14 +3137,14 @@
+     Tcl_Obj *CONST *objv)
+ {
+     Blt_TreeNode node1, node2;
+-    int bool;
++    int _bool;
+ 
+     if ((GetNode(cmdPtr, objv[3], &node1) != TCL_OK) ||
+ 	(GetNode(cmdPtr, objv[4], &node2) != TCL_OK)) {
+ 	return TCL_ERROR;
+     }
+-    bool = Blt_TreeIsAncestor(node1, node2);
+-    Tcl_SetIntObj(Tcl_GetObjResult(interp), bool);
++    _bool = Blt_TreeIsAncestor(node1, node2);
++    Tcl_SetIntObj(Tcl_GetObjResult(interp), _bool);
+     return TCL_OK;
+ }
+ 
+@@ -3164,14 +3164,14 @@
+     Tcl_Obj *CONST *objv)
+ {
+     Blt_TreeNode node1, node2;
+-    int bool;
++    int _bool;
+ 
+     if ((GetNode(cmdPtr, objv[3], &node1) != TCL_OK) ||
+ 	(GetNode(cmdPtr, objv[4], &node2) != TCL_OK)) {
+ 	return TCL_ERROR;
+     }
+-    bool = Blt_TreeIsBefore(node1, node2);
+-    Tcl_SetIntObj(Tcl_GetObjResult(interp), bool);
++    _bool = Blt_TreeIsBefore(node1, node2);
++    Tcl_SetIntObj(Tcl_GetObjResult(interp), _bool);
+     return TCL_OK;
+ }
+ 
+@@ -3215,13 +3215,13 @@
+     Tcl_Obj *CONST *objv)
+ {
+     Blt_TreeNode node;
+-    int bool;
++    int _bool;
+ 
+     if (GetNode(cmdPtr, objv[3], &node) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    bool = (node == Blt_TreeRootNode(cmdPtr->tree));
+-    Tcl_SetIntObj(Tcl_GetObjResult(interp), bool);
++    _bool = (node == Blt_TreeRootNode(cmdPtr->tree));
++    Tcl_SetIntObj(Tcl_GetObjResult(interp), _bool);
+     return TCL_OK;
+ }
+ 
+--- src/bltVecObjCmd.c.orig	2025-05-09 17:27:02
++++ src/bltVecObjCmd.c	2025-05-09 17:21:28
+@@ -696,7 +696,7 @@
+     Tcl_Obj *CONST *objv;
+ {
+     int option;
+-    int bool;
++    int _bool;
+     enum optionIndices {
+ 	OPTION_ALWAYS, OPTION_NEVER, OPTION_WHENIDLE, 
+ 	OPTION_NOW, OPTION_CANCEL, OPTION_PENDING
+@@ -733,8 +733,8 @@
+ 	}
+ 	break;
+     case OPTION_PENDING:
+-	bool = (vPtr->notifyFlags & NOTIFY_PENDING);
+-	Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++	_bool = (vPtr->notifyFlags & NOTIFY_PENDING);
++	Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+ 	break;
+     }	
+     return TCL_OK;
+--- src/bltVector.c.orig	2025-05-09 17:19:36
++++ src/bltVector.c	2025-05-09 17:20:22
+@@ -1384,7 +1384,7 @@
+ 		cmdName = argv[i];
+ 	    } else if ((length > 1) &&
+ 		(strncmp(argv[i], "-watchunset", length) == 0)) {
+-		int bool;
++		int _bool;
+ 
+ 		if ((i + 1) == argc) {
+ 		    Tcl_AppendResult(interp, "no value name supplied with \"",
+@@ -1392,12 +1392,12 @@
+ 		    goto error;
+ 		}
+ 		i++;
+-		if (Tcl_GetBoolean(interp, argv[i], &bool) != TCL_OK) {
++		if (Tcl_GetBoolean(interp, argv[i], &_bool) != TCL_OK) {
+ 		    goto error;
+ 		}
+-		freeOnUnset = bool;
++		freeOnUnset = _bool;
+ 	    } else if ((length > 1) && (strncmp(argv[i], "-flush", length) == 0)) {
+-		int bool;
++		int _bool;
+ 
+ 		if ((i + 1) == argc) {
+ 		    Tcl_AppendResult(interp, "no value name supplied with \"",
+@@ -1405,10 +1405,10 @@
+ 		    goto error;
+ 		}
+ 		i++;
+-		if (Tcl_GetBoolean(interp, argv[i], &bool) != TCL_OK) {
++		if (Tcl_GetBoolean(interp, argv[i], &_bool) != TCL_OK) {
+ 		    goto error;
+ 		}
+-		flush = bool;
++		flush = _bool;
+ 	    } else if ((length > 1) && (argv[i][1] == '-') &&
+ 		(argv[i][2] == '\0')) {
+ 		inspectFlags = FALSE;	/* Allow vector names to start with - */
+--- src/bltCanvEps.c.orig	2025-05-09 17:37:55
++++ src/bltCanvEps.c	2025-05-09 17:40:25
+@@ -1713,6 +1713,6 @@
+ {
+     Tk_CreateItemType(&epsItemType);
+     /* Initialize custom canvas option routines. */
+-    tagsOption.parseProc = Tk_CanvasTagsParseProc;
++    tagsOption.parseProc = (int (*)(void *, struct Tcl_Interp *, struct Tk_Window_ *, char *, char *, int)) Tk_CanvasTagsParseProc;
+     tagsOption.printProc = Tk_CanvasTagsPrintProc;
+ }
+--- src/bltConfig.c.orig	2025-05-09 18:04:07
++++ src/bltConfig.c	2025-05-09 18:05:02
+@@ -277,12 +277,12 @@
+ {
+     unsigned int mask = (unsigned int)clientData;	/* Bit to be tested */
+     int *flagPtr = (int *)(widgRec + offset);
+-    int bool;
++    int _bool;
+ 
+-    if (Tcl_GetBoolean(interp, string, &bool) != TCL_OK) {
++    if (Tcl_GetBoolean(interp, string, &_bool) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    if (bool) {
++    if (_bool) {
+ 	*flagPtr |= mask;
+     } else {
+ 	*flagPtr &= ~mask;
+@@ -312,9 +312,9 @@
+     Tcl_FreeProc **freeProcPtr;	/* Not Used. */
+ {
+     unsigned int mask = (unsigned int)clientData;	/* Bit to be tested */
+-    unsigned int bool = *(unsigned int *)(widgRec + offset);
++    unsigned int _bool = *(unsigned int *)(widgRec + offset);
+ 
+-    return (bool & mask) ? "1" : "0";
++    return (_bool & mask) ? "1" : "0";
+ }
+ 
+ 
+--- src/bltGrAxis.c.orig	2025-05-09 17:33:26
++++ src/bltGrAxis.c	2025-05-09 17:34:19
+@@ -804,13 +804,13 @@
+ 	if ((argv[i][0] == 'a') && (strcmp(argv[i], "always") == 0)) {
+ 	    values[i] = TICK_RANGE_ALWAYS_LOOSE;
+ 	} else {
+-	    int bool;
++	    int _bool;
+ 
+-	    if (Tcl_GetBoolean(interp, argv[i], &bool) != TCL_OK) {
++	    if (Tcl_GetBoolean(interp, argv[i], &_bool) != TCL_OK) {
+ 		Blt_Free(argv);
+ 		return TCL_ERROR;
+ 	    }
+-	    values[i] = bool;
++	    values[i] = _bool;
+ 	}
+     }
+     axisPtr->looseMin = axisPtr->looseMax = values[0];
+--- src/bltHierbox.c.orig	2025-05-09 18:05:20
++++ src/bltHierbox.c	2025-05-09 18:05:42
+@@ -7976,10 +7976,10 @@
+ 	return TCL_ERROR;
+     }
+     if (treePtr != NULL) {
+-	int bool;
++	int _bool;
+ 
+-	bool = IsSelected(hboxPtr, treePtr);
+-	Blt_SetBooleanResult(interp, bool);
++	_bool = IsSelected(hboxPtr, treePtr);
++	Blt_SetBooleanResult(interp, _bool);
+     }
+     return TCL_OK;
+ }
+@@ -8067,10 +8067,10 @@
+     int argc;			/* Not used. */
+     char **argv;
+ {
+-    int bool;
++    int _bool;
+ 
+-    bool = (Blt_ChainGetLength(&(hboxPtr->selectChain)) > 0);
+-    Blt_SetBooleanResult(interp, bool);
++    _bool = (Blt_ChainGetLength(&(hboxPtr->selectChain)) > 0);
++    Blt_SetBooleanResult(interp, _bool);
+     return TCL_OK;
+ }
+ 
+--- src/bltObjConfig.c.orig	2025-05-09 18:21:44
++++ src/bltObjConfig.c	2025-05-09 18:21:54
+@@ -1218,16 +1218,16 @@
+ 
+ 	case BLT_CONFIG_BITFLAG: 
+ 	    {
+-		int bool;
++		int _bool;
+ 		unsigned int flag;
+ 
+ 		
+-		if (Tcl_GetBooleanFromObj(interp, objPtr, &bool) != TCL_OK) {
++		if (Tcl_GetBooleanFromObj(interp, objPtr, &_bool) != TCL_OK) {
+ 		    return TCL_ERROR;
+ 		}
+ 		flag = (unsigned int)specPtr->customPtr;
+ 		*(int *)ptr &= ~flag;
+-		if (bool) {
++		if (_bool) {
+ 		    *(int *)ptr |= flag;
+ 		}
+ 	    }
+--- src/bltTable.c.orig	2025-05-09 18:06:06
++++ src/bltTable.c	2025-05-09 18:06:17
+@@ -706,13 +706,13 @@
+ {
+     double *controlPtr = (double *)(widgRec + offset);
+     unsigned int length;
+-    int bool;
++    int _bool;
+     char c;
+ 
+     c = string[0];
+     length = strlen(string);
+-    if (Tcl_GetBoolean(NULL, string, &bool) == TCL_OK) {
+-	*controlPtr = bool;
++    if (Tcl_GetBoolean(NULL, string, &_bool) == TCL_OK) {
++	*controlPtr = _bool;
+ 	return TCL_OK;
+     }
+     if ((c == 'n') && (length > 1) &&
+--- src/bltTabnotebook.c.orig	2025-05-09 18:06:36
++++ src/bltTabnotebook.c	2025-05-09 18:06:58
+@@ -3898,12 +3898,12 @@
+     int argc;
+     char **argv;
+ {
+-    int bool;
++    int _bool;
+ 
+-    if (Tcl_GetBoolean(interp, argv[3], &bool) != TCL_OK) {
++    if (Tcl_GetBoolean(interp, argv[3], &_bool) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    if (bool) {
++    if (_bool) {
+ 	nbPtr->flags |= PERFORATION_ACTIVE;
+     } else {
+ 	nbPtr->flags &= ~PERFORATION_ACTIVE;
+--- src/bltTabset.c.orig	2025-05-09 18:07:18
++++ src/bltTabset.c	2025-05-09 18:07:33
+@@ -4071,12 +4071,12 @@
+     int argc;
+     char **argv;
+ {
+-    int bool;
++    int _bool;
+ 
+-    if (Tcl_GetBoolean(interp, argv[3], &bool) != TCL_OK) {
++    if (Tcl_GetBoolean(interp, argv[3], &_bool) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    if (bool) {
++    if (_bool) {
+ 	setPtr->flags |= PERFORATION_ACTIVE;
+     } else {
+ 	setPtr->flags &= ~PERFORATION_ACTIVE;
+--- src/bltTreeView.c.orig	2025-05-09 18:07:56
++++ src/bltTreeView.c	2025-05-09 18:08:18
+@@ -806,13 +806,13 @@
+ 	*flagsPtr &= ~BUTTON_MASK;
+ 	*flagsPtr |= BUTTON_AUTO;
+     } else {
+-	int bool;
++	int _bool;
+ 
+-	if (Tcl_GetBooleanFromObj(interp, objPtr, &bool) != TCL_OK) {
++	if (Tcl_GetBooleanFromObj(interp, objPtr, &_bool) != TCL_OK) {
+ 	    return TCL_ERROR;
+ 	}
+ 	*flagsPtr &= ~BUTTON_MASK;
+-	if (bool) {
++	if (_bool) {
+ 	    *flagsPtr |= BUTTON_SHOW;
+ 	}
+     }
+@@ -838,14 +838,14 @@
+     char *widgRec,
+     int offset)
+ {
+-    int bool;
++    int _bool;
+     unsigned int flags = *(int *)(widgRec + offset);
+ 
+-    bool = (flags & BUTTON_MASK);
+-    if (bool == BUTTON_AUTO) {
++    _bool = (flags & BUTTON_MASK);
++    if (_bool == BUTTON_AUTO) {
+ 	return Tcl_NewStringObj("auto", 4);
+     } else {
+-	return Tcl_NewBooleanObj(bool);
++	return Tcl_NewBooleanObj(_bool);
+     }
+ }
+ 
+--- src/bltTreeView.h.orig	2025-05-09 18:20:16
++++ src/bltTreeView.h	2025-05-09 18:20:24
+@@ -1006,6 +1006,8 @@
+ 	TreeViewColumn *columnPtr, Drawable drawable));
+ extern int Blt_TreeViewTextOp _ANSI_ARGS_((TreeView *tvPtr, Tcl_Interp *interp,
+ 	int objc, Tcl_Obj *CONST *objv));
++extern int Blt_TreeViewTextbox _ANSI_ARGS_((TreeView *tvPtr,
++	TreeViewEntry *entryPtr, TreeViewColumn *columnPtr));
+ extern int Blt_TreeViewCombobox _ANSI_ARGS_((TreeView *tvPtr,
+ 	TreeViewEntry *entryPtr, TreeViewColumn *columnPtr));
+ extern int Blt_TreeViewCreateEntry _ANSI_ARGS_((TreeView *tvPtr, 
+--- src/bltTreeViewCmd.c.orig	2025-05-09 18:09:06
++++ src/bltTreeViewCmd.c	2025-05-09 18:09:35
+@@ -2007,14 +2007,14 @@
+     Tcl_Obj *CONST *objv;
+ {
+     TreeViewEntry *e1Ptr, *e2Ptr;
+-    int bool;
++    int _bool;
+ 
+     if ((Blt_TreeViewGetEntry(tvPtr, objv[3], &e1Ptr) != TCL_OK) ||
+ 	(Blt_TreeViewGetEntry(tvPtr, objv[4], &e2Ptr) != TCL_OK)) {
+ 	return TCL_ERROR;
+     }
+-    bool = Blt_TreeIsBefore(e1Ptr->node, e2Ptr->node);
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    _bool = Blt_TreeIsBefore(e1Ptr->node, e2Ptr->node);
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+@@ -2034,13 +2034,13 @@
+     Tcl_Obj *CONST *objv;
+ {
+     TreeViewEntry *entryPtr;
+-    int bool;
++    int _bool;
+ 
+     if (Blt_TreeViewGetEntry(tvPtr, objv[3], &entryPtr) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    bool = (entryPtr->flags & ENTRY_HIDDEN);
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    _bool = (entryPtr->flags & ENTRY_HIDDEN);
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+@@ -2061,13 +2061,13 @@
+     Tcl_Obj *CONST *objv;
+ {
+     TreeViewEntry *entryPtr;
+-    int bool;
++    int _bool;
+ 
+     if (Blt_TreeViewGetEntry(tvPtr, objv[3], &entryPtr) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    bool = ((entryPtr->flags & ENTRY_CLOSED) == 0);
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    _bool = ((entryPtr->flags & ENTRY_CLOSED) == 0);
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+@@ -4233,13 +4233,13 @@
+     Tcl_Obj *CONST *objv;
+ {
+     TreeViewEntry *entryPtr;
+-    int bool;
++    int _bool;
+ 
+     if (Blt_TreeViewGetEntry(tvPtr, objv[3], &entryPtr) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+-    bool = Blt_TreeViewEntryIsSelected(tvPtr, entryPtr);
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    _bool = Blt_TreeViewEntryIsSelected(tvPtr, entryPtr);
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+@@ -4328,10 +4328,10 @@
+     int objc;			/* Not used. */
+     Tcl_Obj *CONST *objv;
+ {
+-    int bool;
++    int _bool;
+ 
+-    bool = (Blt_ChainGetLength(tvPtr->selChainPtr) > 0);
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    _bool = (Blt_ChainGetLength(tvPtr->selChainPtr) > 0);
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+--- src/bltTreeViewColumn.c.orig	2025-05-09 18:10:23
++++ src/bltTreeViewColumn.c	2025-05-09 18:10:39
+@@ -1726,18 +1726,18 @@
+ {
+ 
+     if (objc == 4) {
+-	int bool;
++	int _bool;
+ 	int isAuto;
+ 
+ 	isAuto = ((tvPtr->flags & TV_SORT_AUTO) != 0);
+-	if (Tcl_GetBooleanFromObj(interp, objv[3], &bool) != TCL_OK) {
++	if (Tcl_GetBooleanFromObj(interp, objv[3], &_bool) != TCL_OK) {
+ 	    return TCL_ERROR;
+ 	}
+-	if (isAuto != bool) {
++	if (isAuto != _bool) {
+ 	    tvPtr->flags |= (TV_LAYOUT | TV_DIRTY | TV_RESORT);
+ 	    Blt_TreeViewEventuallyRedraw(tvPtr);
+ 	}
+-	if (bool) {
++	if (_bool) {
+ 	    tvPtr->flags |= TV_SORT_AUTO;
+ 	} else {
+ 	    tvPtr->flags &= ~TV_SORT_AUTO;
+--- src/bltTreeViewEdit.c.orig	2025-05-09 18:09:54
++++ src/bltTreeViewEdit.c	2025-05-09 18:10:05
+@@ -1627,10 +1627,10 @@
+     int objc;			/* Not used. */
+     Tcl_Obj *CONST *objv;	/* Not used. */
+ {
+-    int bool;
++    int _bool;
+ 
+-    bool = (tbPtr->selFirst != -1);
+-    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(bool));
++    _bool = (tbPtr->selFirst != -1);
++    Tcl_SetObjResult(interp, Tcl_NewBooleanObj(_bool));
+     return TCL_OK;
+ }
+ 
+--- src/bltTreeViewStyle.c.orig	2025-05-09 18:10:58
++++ src/bltTreeViewStyle.c	2025-05-09 18:11:26
+@@ -1117,7 +1117,7 @@
+     Tk_3DBorder border;
+     XColor *fgColor;
+     Tk_Font font;
+-    int bool;
++    int _bool;
+     int borderWidth, relief;
+     TextLayout *textPtr;
+     int boxX, boxY, boxWidth, boxHeight;
+@@ -1172,8 +1172,8 @@
+ 	}
+     }
+ 
+-    bool = (strcmp(valuePtr->string, cbPtr->onValue) == 0);
+-    textPtr = (bool) ? cbPtr->onPtr : cbPtr->offPtr;
++    _bool = (strcmp(valuePtr->string, cbPtr->onValue) == 0);
++    textPtr = (_bool) ? cbPtr->onPtr : cbPtr->offPtr;
+ 
+     /*
+      * Draw the box and check. 
+@@ -1196,7 +1196,7 @@
+     XDrawRectangle(tvPtr->display, drawable, cbPtr->boxGC, boxX, boxY, 
+ 	boxWidth, boxHeight);
+ 
+-    if (bool) {
++    if (_bool) {
+ 	int midX, midY;
+ 	int i;
+ 
+@@ -2405,18 +2405,18 @@
+     Tcl_Obj *CONST *objv;
+ {
+     TreeViewStyle *stylePtr;
+-    int bool, oldBool;
++    int _bool, oldBool;
+ 
+     stylePtr = GetStyle(interp, tvPtr, Tcl_GetString(objv[3]));
+     if (stylePtr == NULL) {
+ 	return TCL_ERROR;
+     }
+-    if (Tcl_GetBooleanFromObj(interp, objv[4], &bool) != TCL_OK) {
++    if (Tcl_GetBooleanFromObj(interp, objv[4], &_bool) != TCL_OK) {
+ 	return TCL_ERROR;
+     }
+     oldBool = ((stylePtr->flags & STYLE_HIGHLIGHT) != 0);
+-    if (oldBool != bool) {
+-	if (bool) {
++    if (oldBool != _bool) {
++	if (_bool) {
+ 	    stylePtr->flags |= STYLE_HIGHLIGHT;
+ 	} else {
+ 	    stylePtr->flags &= ~STYLE_HIGHLIGHT;
+--- src/bltUnixDnd.c.orig	2025-05-09 18:21:04
++++ src/bltUnixDnd.c	2025-05-09 18:21:25
+@@ -1156,16 +1156,16 @@
+     char *string;
+ {
+     char c;
+-    int bool;
++    int _bool;
+ 
+     c = string[0];
+     if ((c == 'c') && (strcmp(string, "cancel") == 0)) {
+ 	return DROP_CANCEL;
+-    } else if (Tcl_GetBoolean(interp, string, &bool) != TCL_OK) {
++    } else if (Tcl_GetBoolean(interp, string, &_bool) != TCL_OK) {
+ 	Tcl_BackgroundError(interp);
+ 	return DROP_CANCEL;
+     }
+-    return bool;
++    return _bool;
+ }
+ 
+ static void
