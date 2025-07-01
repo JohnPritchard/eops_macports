@@ -7,14 +7,14 @@ This repository provides a workaround to install the following EOPS packages via
 2. FIMS for FORS2
 3. FPOSS for FLAMES
 
-FPOSS is also available from the offical MacPorts repository and the ESO Repository.
+FPOSS is also available from the [offical MacPorts repository](https://ports.macports.org/port/eso-flames-fposs/) and the [ESO Repository(https://www.eso.org/sci/software/pipelines/installation/macports.html)].
 
-FIMS is also available from the ESO Repository.
+FIMS is also available from the [ESO Repository(https://www.eso.org/sci/software/pipelines/installation/macports.html)].
 
 ## Installation
 
 The following instructions assume that MacPorts is already installed.
-If not, see [https://www.macports.org/install.php].
+If not, see [MacPorts Installation](https://www.macports.org/install.php).
 
 In a terminal, issue the following commands
 
