@@ -13,6 +13,7 @@ FIMS is also available from the [ESO Repository(https://www.eso.org/sci/software
 
 KARMA is also available from the [ESO Repository(https://www.eso.org/sci/software/pipelines/installation/macports.html)], but only an old binary version that only works on Intel hardware. **This is the only version of KARMA available for Apple Silicon**.
 
+In case of any issues or difficulties, please create a ticket at the [ESO User Support Helpdesk](https://support.eso.org/).
 
 ## Installation
 
