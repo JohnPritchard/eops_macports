@@ -33,8 +33,7 @@ long_description \
 
 platforms           darwin
 homepage            http://incrtcl.sourceforge.net/
-master_sites        sourceforge:project/tkimg/tkimg/${branch}/tkimg%20${version} \
-                    sourceforge:tcl:tcl
+master_sites        https://ftp.eso.org/pub/usg/eso-tcltk
 
 dist_subdir         eso-tcltk
 distname            ${_name}${branch}
