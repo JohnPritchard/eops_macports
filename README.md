@@ -42,7 +42,7 @@ In a terminal, issue the following commands
 ```bash
 bash
 cd /opt/eops_macports
-git pull
+sudo -u macports git pull
 ```
 
 ### Deactivate
@@ -53,10 +53,10 @@ In a terminal, issue the following commands
 bash
 cd /opt
 sudo port uninstall eops-\*
-/usr/bin/sed -i '' \
+sudo /usr/bin/sed -i '' \
     -e "s[^file:.*eops_macports[#&[" \
     /opt/local/etc/macports/sources.conf
-rm -fr eops_macports
+sudo rm -fr eops_macports
 ```
 
 
