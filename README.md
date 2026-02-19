@@ -3,7 +3,7 @@ A MacPorts repository for ESO Observation Preparation Software [EOPS]
 
 This repository provides a workaround to install the following EOPS packages via MacPorts:
 
-1. KARMA for KMOS
+1. ~~KARMA for KMOS~~
 2. FIMS for FORS2
 3. FPOSS for FLAMES
 
@@ -11,7 +11,7 @@ FPOSS is also available from the [offical MacPorts repository](https://ports.mac
 
 FIMS is also available from the [ESO Repository(https://www.eso.org/sci/software/pipelines/installation/macports.html)].
 
-KARMA is also available from the [ESO Repository(https://www.eso.org/sci/software/pipelines/installation/macports.html)], but only an old binary version that only works on Intel hardware. **This is the only version of KARMA available for Apple Silicon**.
+KARMA is also available from the [ESO Repository(https://www.eso.org/sci/software/pipelines/installation/macports.html)], but only an old binary version that only works on Intel hardware. ~~**This is the only version of KARMA available for Apple Silicon**.~~  **Unfortunately, while it builds and installs, it doesn't currently run correctly...**
 
 In case of any issues or difficulties, please create a ticket at the [ESO User Support Helpdesk](https://support.eso.org/).
 
