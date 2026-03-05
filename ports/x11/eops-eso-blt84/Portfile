@@ -2,7 +2,7 @@ PortSystem      1.0
 name                    eso-blt84
 version                 2.4
 #version                 2.4z
-#revision                1
+revision                1
 
 PortGroup           compilers 1.0
 
@@ -79,18 +79,10 @@ configure.args	\
 			--x-libraries=/opt/local/lib 
 
 post-patch {
-
-  system "gsed -i \
-    -e 's%pkgIndex.tcl \$(scriptdir).*%pkgIndex.tcl \$(INSTALL_ROOT)\$(scriptdir)%' ${worksrcpath}/library/Makefile.in"
-
-  system "gsed -i \
-    -e 's%INSTALL_DIR%INSTALL_ROOT%g' ${worksrcpath}/Makefile.in"
-    
-  system "gsed -i \
-    -e's%^SHLIB_TCL_ONLY_LIB_SPECS.*%SHLIB_TCL_ONLY_LIB_SPECS = -install_name \${libdir}/\${tcl_only_lib_so}%' ${worksrcpath}/src/shared/Makefile.in"
-
-  system "gsed -i \
-    -e 's%^SHLIB_LIB_SPECS.*%SHLIB_LIB_SPECS = -install_name \${libdir}/\${lib_so}%' ${worksrcpath}/src/shared/Makefile.in"
+  reinplace "s%pkgIndex.tcl \$(scriptdir).*%pkgIndex.tcl \$(INSTALL_ROOT)\$(scriptdir)%" ${worksrcpath}/library/Makefile.in
+  reinplace "s%INSTALL_DIR%INSTALL_ROOT%g" ${worksrcpath}/Makefile.in
+  reinplace "s%^SHLIB_TCL_ONLY_LIB_SPECS.*%SHLIB_TCL_ONLY_LIB_SPECS = -install_name \${libdir}/\${tcl_only_lib_so}%" ${worksrcpath}/src/shared/Makefile.in
+  reinplace "s%^SHLIB_LIB_SPECS.*%SHLIB_LIB_SPECS = -install_name \${libdir}/\${lib_so}%" ${worksrcpath}/src/shared/Makefile.in
 }
 
 post-destroot {
