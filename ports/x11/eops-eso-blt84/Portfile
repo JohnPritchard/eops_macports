@@ -41,7 +41,8 @@ patchfiles-append     patch.eso-blt_fix_bool.diff
 
 depends_build \
       port:xorg-libX11 \
-			port:${_eso_pref}eso-tk84
+			port:${_eso_pref}eso-tk84 \
+      port:gsed
 
 use_parallel_build      no
 
