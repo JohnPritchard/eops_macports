@@ -2,7 +2,7 @@ PortSystem      1.0
 name                    eso-blt84
 version                 2.4
 #version                 2.4z
-#revision                1
+revision                1
 
 PortGroup           compilers 1.0
 
