@@ -17,7 +17,7 @@ set branch          [join [lrange [split ${version} .] 0 1] .]
 
 categories              x11
 license                 MIT
-maintainers             john.david.pritchard@gmail.com
+maintainers             @JohnPritchard
 description             BLT is an extension to the Tk toolkit, adding new widgets, \
 			geometry managers, and miscellaneous commands.
 long_description        ${description}

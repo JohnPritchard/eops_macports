@@ -24,7 +24,7 @@ set SKYCAT_CFG      https://archive.eso.org/skycat/skycat.cfg
 set _rtd_dir        ${_prefix}/libexec/${_eso_pref}eso/rtd
 
 categories      science
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 description     VJPD\'s devel version of eso-skycat
 long_description \
   skycat

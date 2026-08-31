@@ -42,7 +42,7 @@ conflicts       ${_eso_pref}eso-${instrument}-fims-devel
 categories      science
 license         GPL-2+
 platforms       darwin
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 homepage        http://www.eso.org/sci/observing/phase2/SMGuidelines/FIMS.FORS.html
 description     ESO FORS Observation Preparation software
 long_description ESO FORS Observation Preparation software.

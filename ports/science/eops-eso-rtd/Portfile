@@ -20,7 +20,7 @@ prefix              ${_prefix}/libexec/${_eso_pref}eso/${_name}
 set _tcltk_dir      ${_prefix}/libexec/${_eso_pref}eso/tcltk-${_tcl_branch}
 
 categories      science
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 description     VJPD\'s devel version of eso-rtd
 long_description \
   ESO's Real Time Display \[RTD\] tool

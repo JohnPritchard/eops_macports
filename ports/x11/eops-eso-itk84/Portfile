@@ -16,7 +16,7 @@ name                ${_eso_pref}eso-${_name}${_tcl_branch_id}
 set branch          [join [lrange [split ${version} .] 0 1] .]
 
 categories      lang
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 description     Incr Tk Tool Kit
 long_description \
   Incr Tk Tool Kit

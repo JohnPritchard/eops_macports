@@ -18,7 +18,7 @@ prefix              ${_prefix}/libexec/${_eso_pref}eso
 categories      science
 license         GPL-2+
 platforms       darwin
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 homepage        http://www.eso.org/sci/observing/phase2/SMGuidelines/
 description     ESO fsmosaic software
 long_description ESO fsmosaic software, part of the FIMS observation preparation software for the FORSes

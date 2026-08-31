@@ -14,7 +14,7 @@ revision        1
 categories      science
 license         GPL-2+
 platforms       darwin
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 homepage        http://www.eso.org/sci/observing/phase2/SMGuidelines/KARMA.KMOS.html
 description     ESO KMOS Observation Preparation software
 long_description ESO KMOS Observation Preparation software.

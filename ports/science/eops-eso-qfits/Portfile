@@ -19,7 +19,7 @@ prefix              ${_prefix}/libexec/${_eso_pref}eso
 categories      science
 license         GPL-2+
 platforms       darwin
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 homepage        https://www.eso.org/sci/software/eclipse/qfits
 description     ESO Eclipse qfits library and command suite (dfits, fitsort etc...)
 long_description ESO Eclipse qfits library and command suite (dfits, fitsort etc...)

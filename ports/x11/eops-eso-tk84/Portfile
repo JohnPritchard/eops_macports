@@ -16,7 +16,7 @@ name                ${_eso_pref}eso-${_name}${_tcl_branch_id}
 set branch          [join [lrange [split ${version} .] 0 1] .]
 
 categories      x11
-maintainers     mww openmaintainer
+maintainers     @JohnPritchard
 description     Tcl Tool Kit
 long_description \
   This is Tk version ${version}, a GUI toolkit for Tcl. The best way to get \

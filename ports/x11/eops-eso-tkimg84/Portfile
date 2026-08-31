@@ -26,7 +26,7 @@ set branch          [join [lrange [split ${version} .] 0 1] .]
 set _name           Img
 
 categories      x11
-maintainers     john.david.pritchard@gmail.com
+maintainers     @JohnPritchard
 description     tkimg Tool Kit
 long_description \
   tkimg

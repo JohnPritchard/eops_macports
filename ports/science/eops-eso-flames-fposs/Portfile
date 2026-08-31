@@ -14,7 +14,7 @@ revision            1
 
 categories          science
 license             GPL-2+
-maintainers         eso.org:john.pritchard
+maintainers         @JohnPritchard
 homepage            http://www.eso.org/sci/observing/phase2/SMGuidelines/FPOSS.FLAMES.html
 description         ESO FLAMES Observation Preparation software
 long_description    ESO FLAMES Observation Preparation software.
